@@ -29,10 +29,6 @@
                 <flux:navlist.item icon="folder" :href="route('projects')" :current="request()->routeIs('projects') || request()->routeIs('projects.*')" wire:navigate>
                     {{ __('Program') }}
                 </flux:navlist.item>
-                <!-- Task Management -->
-                <flux:navlist.item icon="square-check" :href="route('tasks')" :current="request()->routeIs('tasks') || request()->routeIs('tasks.*')" wire:navigate>
-                    {{ __('Tugas') }}
-                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

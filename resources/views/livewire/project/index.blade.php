@@ -25,13 +25,7 @@ new class extends Component {
 
     public function mount()
     {
-        $this->statuses = [
-            (object) ['name' => 'Direncanakan', 'value' => 'planned'],
-            (object) ['name' => 'Sedang Berjalan', 'value' => 'in_progress'],
-            (object) ['name' => 'Selesai', 'value' => 'completed'],
-            (object) ['name' => 'Ditunda', 'value' => 'on_hold'],
-            (object) ['name' => 'Dibatalkan', 'value' => 'cancelled'],
-        ];
+        $this->statuses = [(object) ['name' => 'Direncanakan', 'value' => 'planned'], (object) ['name' => 'Sedang Berjalan', 'value' => 'in_progress'], (object) ['name' => 'Selesai', 'value' => 'completed'], (object) ['name' => 'Ditunda', 'value' => 'on_hold'], (object) ['name' => 'Dibatalkan', 'value' => 'cancelled']];
 
         $this->fetchData();
     }
@@ -74,6 +68,11 @@ new class extends Component {
     public function viewDetail($projectId)
     {
         $this->dispatch('open-project-detail', projectId: $projectId);
+    }
+
+    public function viewTasks($projectId)
+    {
+        $this->redirect(route('projects.tasks', $projectId));
     }
 
     public function delete($projectId)
@@ -140,66 +139,63 @@ new class extends Component {
     </div>
 
     <!-- Table Data -->
-    <x-table-container>
-        <x-slot:columns>
-            <x-table.column>Nama Program</x-table.column>
-            <x-table.column>Lokasi</x-table.column>
-            <x-table.column>PIC</x-table.column>
-            <x-table.column>Total Anggaran</x-table.column>
-            <x-table.column>Periode</x-table.column>
-            <x-table.column>Status</x-table.column>
-            <x-table.column align="center">Aksi</x-table.column>
-        </x-slot:columns>
-
-        <x-slot:rows>
-            @forelse ($projectData as $project)
-                <x-table.row wire:click="viewDetail({{ $project->id }})" class="cursor-pointer hover:bg-gray-50">
-                    <x-table.cell>
-                        <div class="flex flex-col">
-                            <span>{{ $project->program_name }}</span>
-                            <span class="text-sm text-gray-500">{{ Str::limit($project->program_description, 50) }}</span>
-                        </div>
-                    </x-table.cell>
-                    <x-table.cell>
-                        <div class="flex flex-col">
-                            <span>{{ $project->location ?? '-' }}</span>
-                            <span class="text-xs text-gray-500">
-                                {{ $project->start_date?->format('d/m/Y') }} - {{ $project->end_date?->format('d/m/Y') }}
-                            </span>
-                        </div>
-                    </x-table.cell>
-                    <x-table.cell>
-                        {{ $project->pic?->full_name ?? '-' }}
-                    </x-table.cell>
-                    <x-table.cell>
-                        Rp {{ number_format($project->total_budget, 2, ',', '.') }}
-                    </x-table.cell>
-                    <x-table.cell>
-                        {{ $project->start_date?->format('d/m/Y') }} - {{ $project->end_date?->format('d/m/Y') }}
-                    </x-table.cell>
-                    <x-table.cell>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @forelse ($projectData as $project)
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">{{ Str::limit($project->program_name, 45) }}</h3>
                         @foreach ($statuses as $status)
                             @if ($project->status === $status->value)
                                 <flux:badge>{{ $status->name }}</flux:badge>
                             @endif
                         @endforeach
-                    </x-table.cell>
-                    <x-table.cell align="center" wire:click.stop>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($project->program_description, 80) }}</p>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="map-pin" class="w-4 h-4 mr-2" />
+                            <span>{{ $project->location ?? '-' }}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="user" class="w-4 h-4 mr-2" />
+                            <span>{{ $project->pic?->full_name ?? '-' }}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="calendar" class="w-4 h-4 mr-2" />
+                            <span>{{ $project->start_date?->format('d/m/Y') }} -
+                                {{ $project->end_date?->format('d/m/Y') }}</span>
+                        </div>
+                        <div class="flex items-center text-sm font-semibold text-gray-900">
+                            <flux:icon name="wallet" class="w-4 h-4 mr-2" />
+                            <span>Rp {{ number_format($project->total_budget, 2, ',', '.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                        <flux:button size="sm" href="{{ route('projects.tasks', $project->id) }}">
+                            <flux:icon name="square-check" class="w-4 h-4" />
+                        </flux:button>
+                        <flux:button size="sm" variant="ghost" wire:click="viewDetail({{ $project->id }})">
+                            <flux:icon name="eye" class="w-4 h-4" />
+                        </flux:button>
                         <flux:button size="sm" wire:click="edit({{ $project->id }})">
                             <flux:icon name="square-pen" class="w-4 h-4" />
                         </flux:button>
                         <flux:button size="sm" variant="danger" wire:click="delete({{ $project->id }})">
                             <flux:icon name="trash" class="w-4 h-4" />
                         </flux:button>
-                    </x-table.cell>
-                </x-table.row>
-            @empty
-                <x-table.row>
-                    <x-table.cell colspan="5" align="center">Tidak ada data program</x-table.cell>
-                </x-table.row>
-            @endforelse
-        </x-slot:rows>
-    </x-table-container>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-span-full text-center py-12 text-gray-500">
+                Tidak ada data program
+            </div>
+        @endforelse
+    </div>
 
     <!-- Pagination -->
     <div class="mt-4">

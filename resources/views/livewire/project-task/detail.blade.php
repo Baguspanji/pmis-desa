@@ -26,6 +26,7 @@ new class extends Component {
             'parentTask',
             'subTasks',
             'assignedUser',
+            'targets',
             'budgetRealizations',
             'attachments',
         ])->findOrFail($this->taskId);
@@ -206,6 +207,85 @@ new class extends Component {
                                         @endif
                                     </div>
                                 @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Task Targets -->
+                    @if ($task->targets && $task->targets->count() > 0)
+                        <div class="border-b pb-4">
+                            <h3 class="text-lg font-semibold mb-4">Target Tugas ({{ $task->targets->count() }})</h3>
+                            <div class="space-y-3">
+                                @foreach ($task->targets as $target)
+                                    <div class="p-3 bg-gray-50 rounded">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-500">Target</label>
+                                                <p class="text-sm font-medium text-gray-900">
+                                                    {{ number_format($target->target_value, 2, ',', '.') }}
+                                                    @if ($task->progress_type === 'percentage')
+                                                        %
+                                                    @endif
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-500">Tercapai</label>
+                                                <p class="text-sm font-medium text-gray-900">
+                                                    {{ number_format($target->achieved_value ?? 0, 2, ',', '.') }}
+                                                    @if ($task->progress_type === 'percentage')
+                                                        %
+                                                    @endif
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-500">Tanggal Target</label>
+                                                <p class="text-sm text-gray-900">
+                                                    {{ $target->target_date?->format('d/m/Y') ?? '-' }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-500">Progress</label>
+                                                <div class="flex items-center gap-2">
+                                                    @php
+                                                        $progress = $target->target_value > 0
+                                                            ? ($target->achieved_value / $target->target_value) * 100
+                                                            : 0;
+                                                    @endphp
+                                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                        <div class="h-2 rounded-full {{ $progress >= 100 ? 'bg-green-500' : ($progress >= 50 ? 'bg-blue-500' : 'bg-yellow-500') }}"
+                                                            style="width: {{ min($progress, 100) }}%"></div>
+                                                    </div>
+                                                    <span class="text-xs font-medium text-gray-600">
+                                                        {{ number_format(min($progress, 100), 1) }}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if ($target->notes)
+                                            <div class="mt-2 pt-2 border-t border-gray-200">
+                                                <label class="text-xs font-medium text-gray-500">Catatan</label>
+                                                <p class="text-sm text-gray-700 mt-1">{{ $target->notes }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                                @php
+                                    $totalTarget = $task->targets->sum('target_value');
+                                    $totalAchieved = $task->targets->sum('achieved_value');
+                                    $overallProgress = $totalTarget > 0 ? ($totalAchieved / $totalTarget) * 100 : 0;
+                                @endphp
+                                <div class="pt-3 border-t border-gray-300">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-semibold text-gray-900">Total Progress</span>
+                                        <span class="text-sm font-semibold text-gray-900">
+                                            {{ number_format(min($overallProgress, 100), 1) }}%
+                                        </span>
+                                    </div>
+                                    <div class="bg-gray-200 rounded-full h-3">
+                                        <div class="h-3 rounded-full {{ $overallProgress >= 100 ? 'bg-green-500' : ($overallProgress >= 50 ? 'bg-blue-500' : 'bg-yellow-500') }}"
+                                            style="width: {{ min($overallProgress, 100) }}%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endif

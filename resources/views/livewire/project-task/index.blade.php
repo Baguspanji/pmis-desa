@@ -9,6 +9,8 @@ new class extends Component {
     public $statusFilter = '';
     public $programFilter = '';
 
+    public $programId = null;
+    public $program = null;
     public array $taskData = [];
     public $taskPagination = [
         'current_page' => 1,
@@ -26,13 +28,21 @@ new class extends Component {
         'confirm-delete-task' => 'performDelete',
     ];
 
-    public function mount()
+    public function mount($id)
     {
         $this->statuses = [(object) ['name' => 'Belum Dimulai', 'value' => 'not_started'], (object) ['name' => 'Sedang Berjalan', 'value' => 'in_progress'], (object) ['name' => 'Selesai', 'value' => 'completed'], (object) ['name' => 'Ditunda', 'value' => 'on_hold'], (object) ['name' => 'Dibatalkan', 'value' => 'cancelled']];
 
         $this->programs = Program::all()->toArray();
 
+        $this->programId = $id;
+        $this->loadProgram();
+
         $this->fetchData();
+    }
+
+    public function loadProgram()
+    {
+        $this->program = Program::findOrFail($this->programId);
     }
 
     public function fetchData()
@@ -52,6 +62,8 @@ new class extends Component {
         if ($this->programFilter) {
             $query->where('program_id', $this->programFilter);
         }
+
+        $query->where('program_id', $this->programId);
 
         $paginated = $query->paginate(10);
 
@@ -117,7 +129,12 @@ new class extends Component {
 
 <div>
     <!-- Header Page -->
-    <x-app-header-page title="Tugas" description="Kelola tugas-tugas dalam program pembangunan desa." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Tugas']]">
+    <x-app-header-page title="Tugas : {{ $program->program_name }}"
+        description="Kelola tugas-tugas dalam program pembangunan desa." :breadcrumbs="[
+            ['label' => 'Dashboard', 'url' => route('dashboard')],
+            ['label' => 'Program', 'url' => route('projects', $programId)],
+            ['label' => 'Tugas'],
+        ]">
         <x-slot:actions>
             <flux:button wire:click="create" variant="primary">
                 Tambah Tugas
@@ -150,76 +167,76 @@ new class extends Component {
         </div>
     </div>
 
-    <!-- Table Data -->
-    <x-table-container>
-        <x-slot:columns>
-            <x-table.column>Nama Tugas</x-table.column>
-            <x-table.column>Program</x-table.column>
-            <x-table.column>PIC</x-table.column>
-            <x-table.column>Prioritas</x-table.column>
-            <x-table.column>Status</x-table.column>
-            <x-table.column align="center">Aksi</x-table.column>
-        </x-slot:columns>
+    <!-- Card Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @forelse ($taskData as $task)
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">{{ $task->task_name }}</h3>
+                        <div class="flex flex-col gap-1 items-end">
+                            @foreach ($statuses as $status)
+                                @if ($task->status === $status->value)
+                                    <flux:badge>{{ $status->name }}</flux:badge>
+                                @endif
+                            @endforeach
+                            @if ($task->priority === 'high')
+                                <flux:badge color="red">Tinggi</flux:badge>
+                            @elseif ($task->priority === 'medium')
+                                <flux:badge color="yellow">Sedang</flux:badge>
+                            @else
+                                <flux:badge color="green">Rendah</flux:badge>
+                            @endif
+                        </div>
+                    </div>
 
-        <x-slot:rows>
-            @forelse ($taskData as $task)
-                <x-table.row wire:click="viewDetail({{ $task->id }})" class="cursor-pointer hover:bg-gray-50">
-                    <x-table.cell>
-                        <div class="flex flex-col">
-                            <span>{{ $task->task_name }}</span>
-                            <span class="text-sm text-gray-500">{{ Str::limit($task->task_description, 50) }}</span>
-                            @if ($task->parent_task_id)
-                                <span class="text-xs text-gray-400">Sub-tugas dari:
-                                    {{ $task->parentTask?->task_name }}</span>
-                            @endif
-                        </div>
-                    </x-table.cell>
-                    <x-table.cell>
-                        <div class="flex flex-col">
-                            <span>{{ $task->program?->program_name ?? '-' }}</span>
-                            <span class="text-xs text-gray-500">
-                                {{ $task->start_date?->format('d/m/Y') }} - {{ $task->end_date?->format('d/m/Y') }}
-                            </span>
-                        </div>
-                    </x-table.cell>
-                    <x-table.cell>
-                        {{ $task->assignedUser?->full_name ?? '-' }}
-                    </x-table.cell>
-                    <x-table.cell>
-                        @if ($task->priority === 'high')
-                            <flux:badge color="red">Tinggi</flux:badge>
-                        @elseif ($task->priority === 'medium')
-                            <flux:badge color="yellow">Sedang</flux:badge>
-                        @else
-                            <flux:badge color="green">Rendah</flux:badge>
+                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($task->task_description, 80) }}</p>
+
+                    <div class="space-y-2 mb-4">
+                        @if ($task->parent_task_id)
+                            <div class="flex items-center text-sm text-gray-700">
+                                <flux:icon name="link" class="w-4 h-4 mr-2" />
+                                <span class="text-xs">Sub-tugas dari: {{ $task->parentTask?->task_name }}</span>
+                            </div>
                         @endif
-                    </x-table.cell>
-                    <x-table.cell>
-                        @foreach ($statuses as $status)
-                            @if ($task->status === $status->value)
-                                <flux:badge>{{ $status->name }}</flux:badge>
-                            @endif
-                        @endforeach
-                    </x-table.cell>
-                    <x-table.cell align="center" wire:click.stop>
-                        <flux:button size="sm" href="{{ route('tasks.targets', $task->id) }}" variant="ghost" title="Kelola Target">
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="folder" class="w-4 h-4 mr-2" />
+                            <span>{{ $task->program?->program_name ?? '-' }}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="user" class="w-4 h-4 mr-2" />
+                            <span>{{ $task->assignedUser?->full_name ?? '-' }}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <flux:icon name="calendar" class="w-4 h-4 mr-2" />
+                            <span>{{ $task->start_date?->format('d/m/Y') }} -
+                                {{ $task->end_date?->format('d/m/Y') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                        <flux:button size="sm"
+                            href="{{ route('projects.tasks.targets', ['id' => $programId, 'taskId' => $task->id]) }}">
                             <flux:icon name="square-check" class="w-4 h-4" />
                         </flux:button>
-                        <flux:button size="sm" wire:click="edit({{ $task->id }})" title="Edit Tugas">
+                        <flux:button size="sm" variant="ghost" wire:click="viewDetail({{ $task->id }})">
+                            <flux:icon name="eye" class="w-4 h-4" />
+                        </flux:button>
+                        <flux:button size="sm" wire:click="edit({{ $task->id }})">
                             <flux:icon name="square-pen" class="w-4 h-4" />
                         </flux:button>
-                        <flux:button size="sm" variant="danger" wire:click="delete({{ $task->id }})" title="Hapus Tugas">
+                        <flux:button size="sm" variant="danger" wire:click="delete({{ $task->id }})">
                             <flux:icon name="trash" class="w-4 h-4" />
                         </flux:button>
-                    </x-table.cell>
-                </x-table.row>
-            @empty
-                <x-table.row>
-                    <x-table.cell colspan="6" align="center">Tidak ada data tugas</x-table.cell>
-                </x-table.row>
-            @endforelse
-        </x-slot:rows>
-    </x-table-container>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-span-full text-center py-12 text-gray-500">
+                Tidak ada data tugas
+            </div>
+        @endforelse
+    </div>
 
     <!-- Pagination -->
     <div class="mt-4">

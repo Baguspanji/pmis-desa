@@ -6,15 +6,17 @@ use App\Models\TaskTarget;
 use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
+    public $programId;
     public $taskId;
     public $task;
     public $targets = [];
 
     protected $listeners = ['target-saved' => 'loadTask'];
 
-    public function mount($id)
+    public function mount($id, $taskId)
     {
-        $this->taskId = $id;
+        $this->programId = $id;
+        $this->taskId = $taskId;
         $this->loadTask();
     }
 
@@ -66,11 +68,12 @@ new class extends Component {
     <x-app-header-page title="Target Tugas: {{ $task->task_name }}"
         description="Kelola target dan pencapaian untuk tugas ini." :breadcrumbs="[
             ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Tugas', 'url' => route('tasks')],
+            ['label' => 'Program', 'url' => route('projects', $programId)],
+            ['label' => 'Tugas', 'url' => route('projects.tasks', $taskId)],
             ['label' => 'Target'],
         ]">
         <x-slot:actions>
-            <flux:button wire:click="$redirect('/tasks')" variant="ghost" icon="arrow-left">
+            <flux:button href="{{ route('projects.tasks', $programId) }}" variant="ghost" icon="arrow-left">
                 Kembali
             </flux:button>
         </x-slot:actions>
