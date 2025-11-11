@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->foreignId('pic_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->decimal('total_budget', 15, 2)->default(0.00);
-            $table->string('status', 50)->default('Planning')->comment("'Planning', 'Active', 'Completed', 'Cancelled'");
+            $table->string('status', 50)->default('planned')->comment("'planned', 'in_progress', 'completed', 'on_hold', 'cancelled'");
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });

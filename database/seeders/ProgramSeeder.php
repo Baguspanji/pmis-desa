@@ -23,7 +23,7 @@ class ProgramSeeder extends Seeder
             'end_date' => '2024-12-31',
             'pic_user_id' => null,
             'total_budget' => 500000000.00,
-            'status' => 'Planning',
+            'status' => 'planned',
             'created_by' => 2,
         ]);
 
@@ -91,7 +91,7 @@ class ProgramSeeder extends Seeder
             'end_date' => '2024-11-30',
             'pic_user_id' => 4,
             'total_budget' => 750000000.00,
-            'status' => 'Planning',
+            'status' => 'planned',
             'created_by' => 2,
         ]);
     }

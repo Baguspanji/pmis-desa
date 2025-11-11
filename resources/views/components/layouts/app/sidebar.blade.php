@@ -20,8 +20,12 @@
             </flux:navlist.group>
 
             <flux:navlist.group :heading="__('Management')" class="grid">
+                <!-- User Management -->
                 <flux:navlist.item icon="users" :href="route('users')" :current="request()->routeIs('users.*')"
                     wire:navigate>{{ __('Users') }}</flux:navlist.item>
+                <!-- Project Management -->
+                <flux:navlist.item icon="folder" :href="route('projects')" :current="request()->routeIs('projects.*')"
+                    wire:navigate>{{ __('Projects') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
@@ -39,7 +43,7 @@
 
         <!-- Desktop User Menu -->
         <flux:dropdown class="hidden lg:block" position="bottom" align="start">
-            <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()"
+            <flux:profile :name="auth()->user()->full_name" :initials="auth()->user()->initials()"
                 icon:trailing="chevrons-up-down" data-test="sidebar-menu-button" />
 
             <flux:menu class="w-[220px]">
@@ -54,7 +58,7 @@
                             </span>
 
                             <div class="grid flex-1 text-start text-sm leading-tight">
-                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                <span class="truncate font-semibold">{{ auth()->user()->full_name }}</span>
                                 <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                             </div>
                         </div>
@@ -102,7 +106,7 @@
                             </span>
 
                             <div class="grid flex-1 text-start text-sm leading-tight">
-                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                <span class="truncate font-semibold">{{ auth()->user()->full_name }}</span>
                                 <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                             </div>
                         </div>
