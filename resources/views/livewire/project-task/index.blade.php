@@ -202,10 +202,13 @@ new class extends Component {
                         @endforeach
                     </x-table.cell>
                     <x-table.cell align="center" wire:click.stop>
-                        <flux:button size="sm" wire:click="edit({{ $task->id }})">
+                        <flux:button size="sm" href="{{ route('tasks.targets', $task->id) }}" variant="ghost" title="Kelola Target">
+                            <flux:icon name="square-check" class="w-4 h-4" />
+                        </flux:button>
+                        <flux:button size="sm" wire:click="edit({{ $task->id }})" title="Edit Tugas">
                             <flux:icon name="square-pen" class="w-4 h-4" />
                         </flux:button>
-                        <flux:button size="sm" variant="danger" wire:click="delete({{ $task->id }})">
+                        <flux:button size="sm" variant="danger" wire:click="delete({{ $task->id }})" title="Hapus Tugas">
                             <flux:icon name="trash" class="w-4 h-4" />
                         </flux:button>
                     </x-table.cell>

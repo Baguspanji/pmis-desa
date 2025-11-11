@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Program;
 use App\Models\Task;
+use App\Models\TaskTarget;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -53,6 +54,12 @@ class ProgramSeeder extends Seeder
             'start_date' => '2024-01-21',
             'end_date' => '2024-02-10',
             'estimated_budget' => 200000000.00,
+        ]);
+
+        TaskTarget::create([
+            'task_id' => 1,
+            'target_value' => 20,
+            'target_date' =>  '2024-10-21'
         ]);
 
         Task::create([

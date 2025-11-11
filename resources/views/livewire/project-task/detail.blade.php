@@ -8,7 +8,9 @@ new class extends Component {
     public $showModal = false;
     public $task = null;
 
-    protected $listeners = ['open-task-detail' => 'openModal'];
+    protected $listeners = [
+        'open-task-detail' => 'openModal',
+    ];
 
     public function openModal($taskId)
     {
@@ -24,7 +26,6 @@ new class extends Component {
             'parentTask',
             'subTasks',
             'assignedUser',
-            'targets',
             'budgetRealizations',
             'attachments',
         ])->findOrFail($this->taskId);
@@ -202,31 +203,6 @@ new class extends Component {
                                             <flux:badge size="sm" color="blue">Berjalan</flux:badge>
                                         @else
                                             <flux:badge size="sm" color="gray">Belum Mulai</flux:badge>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Targets -->
-                    @if ($task->targets && $task->targets->count() > 0)
-                        <div class="border-b pb-4">
-                            <h3 class="text-lg font-semibold mb-4">Target ({{ $task->targets->count() }})</h3>
-                            <div class="space-y-2">
-                                @foreach ($task->targets as $target)
-                                    <div class="p-2 bg-gray-50 rounded">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-sm font-medium text-gray-900">
-                                                {{ $target->target_name }}
-                                            </span>
-                                            <span class="text-sm text-gray-600">
-                                                {{ $target->current_value ?? 0 }} / {{ $target->target_value }}
-                                                {{ $target->unit }}
-                                            </span>
-                                        </div>
-                                        @if ($target->target_description)
-                                            <p class="text-xs text-gray-500 mt-1">{{ $target->target_description }}</p>
                                         @endif
                                     </div>
                                 @endforeach
