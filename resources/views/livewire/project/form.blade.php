@@ -119,7 +119,11 @@ new class extends Component {
 
                 $project->update($updateData);
 
-                session()->flash('message', 'Program berhasil diperbarui.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Program berhasil diperbarui.',
+                ]);
             } else {
                 Program::create([
                     'program_name' => $validated['program_name'],
@@ -133,13 +137,21 @@ new class extends Component {
                     'created_by' => auth()->id(),
                 ]);
 
-                session()->flash('message', 'Program berhasil ditambahkan.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Program berhasil ditambahkan.',
+                ]);
             }
 
             $this->closeModal();
             $this->dispatch('project-saved');
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>

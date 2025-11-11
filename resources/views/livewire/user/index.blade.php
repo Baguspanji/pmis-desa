@@ -16,8 +16,12 @@ new class extends Component {
     ];
 
     public array $roles = [];
+    public $userIdToDelete = null;
 
-    protected $listeners = ['user-saved' => 'fetchData'];
+    protected $listeners = [
+        'user-saved' => 'fetchData',
+        'confirm-delete-user' => 'performDelete',
+    ];
 
     public function mount()
     {
@@ -63,12 +67,36 @@ new class extends Component {
 
     public function delete($userId)
     {
+        $this->userIdToDelete = $userId;
+        $user = User::find($userId);
+
+        $this->dispatch('show-confirm', [
+            'type' => 'warning',
+            'title' => 'Konfirmasi Hapus',
+            'content' => 'Apakah Anda yakin ingin menghapus pengguna "' . $user->full_name . '"? Tindakan ini tidak dapat dibatalkan.',
+            'callback' => 'confirm-delete-user',
+        ]);
+    }
+
+    public function performDelete()
+    {
         try {
-            User::findOrFail($userId)->delete();
-            session()->flash('message', 'Pengguna berhasil dihapus.');
+            User::findOrFail($this->userIdToDelete)->delete();
+
+            $this->dispatch('show-alert', [
+                'type' => 'success',
+                'title' => 'Berhasil!',
+                'content' => 'Pengguna berhasil dihapus.',
+            ]);
+
             $this->fetchData();
+            $this->userIdToDelete = null;
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>

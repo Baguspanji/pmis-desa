@@ -116,7 +116,11 @@ new class extends Component {
 
                 $user->update($updateData);
 
-                session()->flash('message', 'Pengguna berhasil diperbarui.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Pengguna berhasil diperbarui.',
+                ]);
             } else {
                 User::create([
                     'full_name' => $validated['full_name'],
@@ -128,13 +132,21 @@ new class extends Component {
                     'is_active' => $this->is_active,
                 ]);
 
-                session()->flash('message', 'Pengguna berhasil ditambahkan.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Pengguna berhasil ditambahkan.',
+                ]);
             }
 
             $this->closeModal();
             $this->dispatch('user-saved');
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>

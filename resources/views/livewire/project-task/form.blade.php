@@ -38,13 +38,13 @@ new class extends Component {
 
         $this->priorities = [['name' => 'Rendah', 'value' => 'low'], ['name' => 'Sedang', 'value' => 'medium'], ['name' => 'Tinggi', 'value' => 'high']];
 
-        $this->progressTypes = [['name' => 'Persentase', 'value' => 'percentage'], ['name' => 'Unit', 'value' => 'unit']];
+        $this->progressTypes = [['name' => 'Persentase', 'value' => 'percentage'], ['name' => 'Status', 'value' => 'status']];
 
         // Load programs for dropdown
         $this->programs = Program::all()->toArray();
 
         // Load users for PIC dropdown
-        $this->users = User::where('is_active', true)->get()->toArray();
+        $this->users = User::where('is_active', true)->where('role', 'staff')->get()->toArray();
 
         // Load parent tasks (only top-level tasks)
         $this->parentTasks = Task::whereNull('parent_task_id')->get()->toArray();
@@ -114,7 +114,7 @@ new class extends Component {
             'parent_task_id' => ['nullable', 'exists:tasks,id'],
             'assigned_user_id' => ['nullable', 'exists:users,id'],
             'status' => ['required', 'in:not_started,in_progress,completed,on_hold,cancelled'],
-            'progress_type' => ['nullable', 'in:percentage,unit'],
+            'progress_type' => ['nullable', 'in:percentage,status'],
             'priority' => ['nullable', 'in:low,medium,high'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
@@ -131,7 +131,7 @@ new class extends Component {
                     'task_name' => $validated['task_name'],
                     'task_description' => $validated['task_description'] ?? null,
                     'program_id' => $validated['program_id'],
-                    'parent_task_id' => $validated['parent_task_id'] ?? null,
+                    'parent_task_id' => $validated['parent_task_id'] != '' ? $validated['parent_task_id'] : null,
                     'assigned_user_id' => $validated['assigned_user_id'] ?? null,
                     'status' => $validated['status'],
                     'progress_type' => $validated['progress_type'] ?? 'percentage',
@@ -143,13 +143,17 @@ new class extends Component {
 
                 $task->update($updateData);
 
-                session()->flash('message', 'Tugas berhasil diperbarui.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Tugas berhasil diperbarui.',
+                ]);
             } else {
                 Task::create([
                     'task_name' => $validated['task_name'],
                     'task_description' => $validated['task_description'] ?? null,
                     'program_id' => $validated['program_id'],
-                    'parent_task_id' => $validated['parent_task_id'] ?? null,
+                    'parent_task_id' => $validated['parent_task_id'] != '' ? $validated['parent_task_id'] : null,
                     'assigned_user_id' => $validated['assigned_user_id'] ?? null,
                     'status' => $validated['status'],
                     'progress_type' => $validated['progress_type'] ?? 'percentage',
@@ -159,13 +163,21 @@ new class extends Component {
                     'estimated_budget' => $validated['estimated_budget'] ?? null,
                 ]);
 
-                session()->flash('message', 'Tugas berhasil ditambahkan.');
+                $this->dispatch('show-alert', [
+                    'type' => 'success',
+                    'title' => 'Berhasil!',
+                    'content' => 'Tugas berhasil ditambahkan.',
+                ]);
             }
 
             $this->closeModal();
             $this->dispatch('task-saved');
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>
@@ -309,11 +321,14 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Estimasi Anggaran</flux:label>
-                        <flux:input wire:model="estimated_budget" type="number" step="0.01" min="0"
+                        <flux:input wire:model.live="estimated_budget" type="number" step="0.01" min="0"
                             placeholder="Masukkan estimasi anggaran" />
                         @error('estimated_budget')
                             <flux:error>{{ $message }}</flux:error>
                         @enderror
+                        <div class="text-xs text-gray-400">
+                            Rp {{ number_format((float) $estimated_budget, 2, ',', '.') }}
+                        </div>
                     </flux:field>
                 </div>
 

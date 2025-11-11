@@ -16,8 +16,12 @@ new class extends Component {
     ];
 
     public array $statuses = [];
+    public $projectIdToDelete = null;
 
-    protected $listeners = ['project-saved' => 'fetchData'];
+    protected $listeners = [
+        'project-saved' => 'fetchData',
+        'confirm-delete-project' => 'performDelete',
+    ];
 
     public function mount()
     {
@@ -69,12 +73,36 @@ new class extends Component {
 
     public function delete($projectId)
     {
+        $this->projectIdToDelete = $projectId;
+        $project = Program::find($projectId);
+
+        $this->dispatch('show-confirm', [
+            'type' => 'warning',
+            'title' => 'Konfirmasi Hapus',
+            'content' => 'Apakah Anda yakin ingin menghapus program "' . $project->program_name . '"? Tindakan ini tidak dapat dibatalkan.',
+            'callback' => 'confirm-delete-project',
+        ]);
+    }
+
+    public function performDelete()
+    {
         try {
-            Program::findOrFail($projectId)->delete();
-            session()->flash('message', 'Program berhasil dihapus.');
+            Program::findOrFail($this->projectIdToDelete)->delete();
+
+            $this->dispatch('show-alert', [
+                'type' => 'success',
+                'title' => 'Berhasil!',
+                'content' => 'Program berhasil dihapus.',
+            ]);
+
             $this->fetchData();
+            $this->projectIdToDelete = null;
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>

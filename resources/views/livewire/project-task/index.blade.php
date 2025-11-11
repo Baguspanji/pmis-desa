@@ -19,8 +19,12 @@ new class extends Component {
 
     public array $statuses = [];
     public array $programs = [];
+    public $taskIdToDelete = null;
 
-    protected $listeners = ['task-saved' => 'fetchData'];
+    protected $listeners = [
+        'task-saved' => 'fetchData',
+        'confirm-delete-task' => 'performDelete',
+    ];
 
     public function mount()
     {
@@ -72,12 +76,36 @@ new class extends Component {
 
     public function delete($taskId)
     {
+        $this->taskIdToDelete = $taskId;
+        $task = Task::find($taskId);
+
+        $this->dispatch('show-confirm', [
+            'type' => 'warning',
+            'title' => 'Konfirmasi Hapus',
+            'content' => 'Apakah Anda yakin ingin menghapus tugas "' . $task->task_name . '"? Tindakan ini tidak dapat dibatalkan.',
+            'callback' => 'confirm-delete-task',
+        ]);
+    }
+
+    public function performDelete()
+    {
         try {
-            Task::findOrFail($taskId)->delete();
-            session()->flash('message', 'Tugas berhasil dihapus.');
+            Task::findOrFail($this->taskIdToDelete)->delete();
+
+            $this->dispatch('show-alert', [
+                'type' => 'success',
+                'title' => 'Berhasil!',
+                'content' => 'Tugas berhasil dihapus.',
+            ]);
+
             $this->fetchData();
+            $this->taskIdToDelete = null;
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
         }
     }
 }; ?>
