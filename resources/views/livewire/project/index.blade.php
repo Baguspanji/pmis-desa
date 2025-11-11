@@ -71,6 +71,11 @@ new class extends Component {
         $this->dispatch('open-project-form', projectId: $projectId);
     }
 
+    public function viewDetail($projectId)
+    {
+        $this->dispatch('open-project-detail', projectId: $projectId);
+    }
+
     public function delete($projectId)
     {
         $this->projectIdToDelete = $projectId;
@@ -148,7 +153,7 @@ new class extends Component {
 
         <x-slot:rows>
             @forelse ($projectData as $project)
-                <x-table.row>
+                <x-table.row wire:click="viewDetail({{ $project->id }})" class="cursor-pointer hover:bg-gray-50">
                     <x-table.cell>
                         <div class="flex flex-col">
                             <span>{{ $project->program_name }}</span>
@@ -179,7 +184,7 @@ new class extends Component {
                             @endif
                         @endforeach
                     </x-table.cell>
-                    <x-table.cell align="center">
+                    <x-table.cell align="center" wire:click.stop>
                         <flux:button size="sm" wire:click="edit({{ $project->id }})">
                             <flux:icon name="square-pen" class="w-4 h-4" />
                         </flux:button>
@@ -203,4 +208,7 @@ new class extends Component {
 
     <!-- Include Project Form Modal -->
     @livewire('project.form')
+
+    <!-- Include Project Detail Modal -->
+    @livewire('project.detail')
 </div>
