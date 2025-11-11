@@ -15,7 +15,7 @@ new class extends Component {
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
+        $this->name = Auth::user()->full_name;
         $this->email = Auth::user()->email;
     }
 
@@ -38,6 +38,9 @@ new class extends Component {
                 Rule::unique(User::class)->ignore($user->id)
             ],
         ]);
+
+        $validated['full_name'] = $validated['name'];
+        unset($validated['name']);
 
         $user->fill($validated);
 
@@ -90,7 +93,7 @@ new class extends Component {
                         </flux:text>
 
                         @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
+                            <flux:text class="mt-2 font-medium !dark:text-green-400 text-green-600!">
                                 {{ __('A new verification link has been sent to your email address.') }}
                             </flux:text>
                         @endif
@@ -111,6 +114,6 @@ new class extends Component {
             </div>
         </form>
 
-        <livewire:settings.delete-user-form />
+        {{-- <livewire:settings.delete-user-form /> --}}
     </x-settings.layout>
 </section>
