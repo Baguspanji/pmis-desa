@@ -138,6 +138,9 @@
 
     {{ $slot }}
 
+    <!-- Global Alert Component -->
+    @livewire('components.global-alert')
+
     @fluxScripts
 </body>
 
