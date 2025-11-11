@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('task_targets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
+            $table->string('target_name', 50);
             $table->decimal('target_value', 10, 2);
             $table->decimal('achieved_value', 10, 2)->default(0.00);
             $table->date('target_date')->nullable();
+            $table->string('target_unit', 50);
             $table->text('notes')->nullable();
             $table->timestamps();
         });

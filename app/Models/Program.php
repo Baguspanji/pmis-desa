@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Program extends Model
 {
@@ -44,6 +45,11 @@ class Program extends Model
     public function targets(): HasMany
     {
         return $this->hasMany(ProgramTarget::class);
+    }
+
+    public function taskTargets(): HasManyThrough
+    {
+        return $this->hasManyThrough(TaskTarget::class, Task::class);
     }
 
     public function attachments(): HasMany

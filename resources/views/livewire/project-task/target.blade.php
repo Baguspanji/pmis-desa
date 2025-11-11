@@ -134,7 +134,10 @@ new class extends Component {
                         <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-start mb-3">
                                 <div class="flex-1">
-                                    <div class="flex items-center gap-2 mb-2">
+                                    <h4 class="text-base font-semibold text-gray-900 mb-2">
+                                        {{ $target->target_name }}
+                                    </h4>
+                                    <div class="flex items-center gap-2">
                                         <span class="text-sm font-medium text-gray-500">Target Date:</span>
                                         <span class="text-sm font-semibold text-gray-900">
                                             {{ $target->target_date?->format('d/m/Y') ?? '-' }}
@@ -157,13 +160,13 @@ new class extends Component {
                                 <div class="bg-blue-50 rounded-lg p-3">
                                     <label class="text-xs font-medium text-blue-900">Nilai Target</label>
                                     <p class="mt-1 text-xl font-bold text-blue-900">
-                                        {{ number_format($target->target_value, 2, ',', '.') }}
+                                        {{ number_format($target->target_value, 2, ',', '.') }} {{ $target->target_unit }}
                                     </p>
                                 </div>
                                 <div class="bg-green-50 rounded-lg p-3">
                                     <label class="text-xs font-medium text-green-900">Nilai Tercapai</label>
                                     <p class="mt-1 text-xl font-bold text-green-900">
-                                        {{ number_format($target->achieved_value, 2, ',', '.') }}
+                                        {{ number_format($target->achieved_value, 2, ',', '.') }} {{ $target->target_unit }}
                                     </p>
                                 </div>
                                 <div class="bg-purple-50 rounded-lg p-3">

@@ -9,9 +9,11 @@ class TaskTarget extends Model
 {
     protected $fillable = [
         'task_id',
+        'target_name',
         'target_value',
         'achieved_value',
         'target_date',
+        'target_unit',
         'notes',
     ];
 

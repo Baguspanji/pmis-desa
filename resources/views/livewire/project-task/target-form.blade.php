@@ -8,9 +8,11 @@ use Illuminate\Validation\Rule;
 new class extends Component {
     public $taskId = null;
     public $targetId = null;
+    public $target_name = '';
     public $target_value = '';
     public $achieved_value = '';
     public $target_date = '';
+    public $target_unit = '';
     public $notes = '';
 
     public $isEdit = false;
@@ -38,9 +40,11 @@ new class extends Component {
     {
         $target = TaskTarget::findOrFail($targetId);
 
+        $this->target_name = $target->target_name ?? '';
         $this->target_value = $target->target_value;
         $this->achieved_value = $target->achieved_value ?? '';
         $this->target_date = $target->target_date?->format('Y-m-d') ?? '';
+        $this->target_unit = $target->target_unit ?? '';
         $this->notes = $target->notes ?? '';
     }
 
@@ -53,9 +57,11 @@ new class extends Component {
     public function resetForm()
     {
         $this->targetId = null;
+        $this->target_name = '';
         $this->target_value = '';
         $this->achieved_value = '';
         $this->target_date = '';
+        $this->target_unit = '';
         $this->notes = '';
         $this->resetValidation();
     }
@@ -63,9 +69,11 @@ new class extends Component {
     public function save()
     {
         $rules = [
+            'target_name' => ['required', 'string', 'max:50'],
             'target_value' => ['required', 'numeric', 'min:0'],
             'achieved_value' => ['nullable', 'numeric', 'min:0'],
             'target_date' => ['required', 'date'],
+            'target_unit' => ['required', 'string', 'max:50'],
             'notes' => ['nullable', 'string'],
         ];
 
@@ -76,9 +84,11 @@ new class extends Component {
                 $target = TaskTarget::findOrFail($this->targetId);
 
                 $target->update([
+                    'target_name' => $validated['target_name'],
                     'target_value' => $validated['target_value'],
                     'achieved_value' => $validated['achieved_value'] ?? 0,
                     'target_date' => $validated['target_date'],
+                    'target_unit' => $validated['target_unit'],
                     'notes' => $validated['notes'] ?? null,
                 ]);
 
@@ -90,9 +100,11 @@ new class extends Component {
             } else {
                 TaskTarget::create([
                     'task_id' => $this->taskId,
+                    'target_name' => $validated['target_name'],
                     'target_value' => $validated['target_value'],
                     'achieved_value' => $validated['achieved_value'] ?? 0,
                     'target_date' => $validated['target_date'],
+                    'target_unit' => $validated['target_unit'],
                     'notes' => $validated['notes'] ?? null,
                 ]);
 
@@ -152,19 +164,45 @@ new class extends Component {
             </div>
 
             <div class="my-4 space-y-4">
-                <!-- Target Value -->
+                <!-- Target Name -->
                 <div>
                     <flux:field>
-                        <flux:label>Nilai Target <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model.live="target_value" type="number" step="0.01" min="0"
-                            placeholder="Masukkan nilai target" required />
-                        @error('target_value')
+                        <flux:label>Nama Target <span class="text-red-500">*</span></flux:label>
+                        <flux:input wire:model="target_name" type="text" maxlength="50"
+                            placeholder="Contoh: Pelatihan Guru, Pembangunan Jalan, dll." required />
+                        @error('target_name')
                             <flux:error>{{ $message }}</flux:error>
                         @enderror
-                        <div class="text-xs text-gray-400 mt-1">
-                            Target: {{ number_format((float) $target_value, 2, ',', '.') }}
-                        </div>
                     </flux:field>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Target Value -->
+                    <div>
+                        <flux:field>
+                            <flux:label>Nilai Target <span class="text-red-500">*</span></flux:label>
+                            <flux:input wire:model.live="target_value" type="number" step="0.01" min="0"
+                                placeholder="Masukkan nilai target" required />
+                            @error('target_value')
+                                <flux:error>{{ $message }}</flux:error>
+                            @enderror
+                            <div class="text-xs text-gray-400 mt-1">
+                                Target: {{ number_format((float) $target_value, 2, ',', '.') }}
+                            </div>
+                        </flux:field>
+                    </div>
+
+                    <!-- Target Unit -->
+                    <div>
+                        <flux:field>
+                            <flux:label>Satuan <span class="text-red-500">*</span></flux:label>
+                            <flux:input wire:model="target_unit" type="text" maxlength="50"
+                                placeholder="Contoh: orang, unit, m², %, dll." required />
+                            @error('target_unit')
+                                <flux:error>{{ $message }}</flux:error>
+                            @enderror
+                        </flux:field>
+                    </div>
                 </div>
 
                 <!-- Achieved Value -->
@@ -179,9 +217,10 @@ new class extends Component {
                         <div class="text-xs text-gray-400 mt-1">
                             Tercapai: {{ number_format((float) ($achieved_value ?: 0), 2, ',', '.') }}
                         </div>
-                        @if($target_value > 0 && $achieved_value > 0)
-                            <div class="text-xs mt-1 {{ ($achieved_value / $target_value * 100) >= 100 ? 'text-green-600' : 'text-blue-600' }}">
-                                Progress: {{ number_format(($achieved_value / $target_value * 100), 2) }}%
+                        @if ($target_value > 0 && $achieved_value > 0)
+                            <div
+                                class="text-xs mt-1 {{ ($achieved_value / $target_value) * 100 >= 100 ? 'text-green-600' : 'text-blue-600' }}">
+                                Progress: {{ number_format(($achieved_value / $target_value) * 100, 2) }}%
                             </div>
                         @endif
                     </flux:field>
@@ -212,7 +251,7 @@ new class extends Component {
             </div>
 
             <div class="flex gap-2">
-                @if($isEdit)
+                @if ($isEdit)
                     <flux:button variant="danger" wire:click="deleteTarget" type="button"
                         wire:confirm="Apakah Anda yakin ingin menghapus target ini?">
                         Hapus

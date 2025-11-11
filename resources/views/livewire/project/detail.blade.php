@@ -25,7 +25,7 @@ new class extends Component {
             'tasks' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             },
-            'targets',
+            'taskTargets',
             'attachments' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             },
@@ -172,19 +172,19 @@ new class extends Component {
                     @endif
 
                     <!-- Targets -->
-                    @if ($project->targets && $project->targets->count() > 0)
+                    @if ($project->taskTargets && $project->taskTargets->count() > 0)
                         <div class="border-b pb-4">
-                            <h3 class="text-lg font-semibold mb-4">Target Program ({{ $project->targets->count() }})</h3>
+                            <h3 class="text-lg font-semibold mb-4">Target Program ({{ $project->taskTargets->count() }})</h3>
                             <div class="space-y-2">
-                                @foreach ($project->targets as $target)
+                                @foreach ($project->taskTargets as $target)
                                     <div class="p-2 bg-gray-50 rounded">
                                         <div class="flex justify-between items-center">
                                             <span class="text-sm font-medium text-gray-900">
                                                 {{ $target->target_name }}
                                             </span>
                                             <span class="text-sm text-gray-600">
-                                                {{ $target->current_value ?? 0 }} / {{ $target->target_value }}
-                                                {{ $target->unit }}
+                                                {{ number_format($target->achieved_value ?? 0, 0, ',', '.') }} / {{ number_format($target->target_value, 0, ',', '.') }}
+                                                {{ $target->target_unit }}
                                             </span>
                                         </div>
                                         @if ($target->target_description)
@@ -232,24 +232,76 @@ new class extends Component {
                                     {{ $project->tasks->count() }}
                                 </p>
                             </div>
-                            <div class="p-3 bg-green-50 rounded">
-                                <label class="text-sm font-medium text-green-700">Tugas Selesai</label>
-                                <p class="mt-1 text-2xl font-bold text-green-900">
-                                    {{ $project->tasks->where('status', 'completed')->count() }}
-                                </p>
-                            </div>
-                            <div class="p-3 bg-yellow-50 rounded">
-                                <label class="text-sm font-medium text-yellow-700">Tugas Berjalan</label>
-                                <p class="mt-1 text-2xl font-bold text-yellow-900">
-                                    {{ $project->tasks->where('status', 'in_progress')->count() }}
-                                </p>
-                            </div>
                             <div class="p-3 bg-purple-50 rounded">
                                 <label class="text-sm font-medium text-purple-700">Total Target</label>
                                 <p class="mt-1 text-2xl font-bold text-purple-900">
-                                    {{ $project->targets->count() }}
+                                    {{ $project->taskTargets->count() }}
                                 </p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Calculation -->
+                    <div class="border-b pb-4">
+                        <h3 class="text-lg font-semibold mb-4">Progres Program</h3>
+                        <div class="space-y-4">
+                            @php
+                                // Calculate task-based progress
+                                $totalTasks = $project->tasks->count();
+                                $completedTasks = $project->tasks->where('status', 'completed')->count();
+                                $taskProgress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
+                            @endphp
+
+                            <!-- Task Progress -->
+                            @if ($totalTasks > 0)
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div>
+                                            <span class="text-sm font-semibold text-gray-900">Progres Berdasarkan Tugas</span>
+                                            <p class="text-xs text-gray-600 mt-1">
+                                                {{ $completedTasks }} dari {{ $totalTasks }} tugas selesai
+                                            </p>
+                                        </div>
+                                        <span class="text-lg font-bold text-gray-700">
+                                            {{ number_format(min($taskProgress, 100), 1) }}%
+                                        </span>
+                                    </div>
+                                    <div class="bg-gray-200 rounded-full h-3">
+                                        <div class="h-3 rounded-full transition-all duration-500 {{ $taskProgress >= 100 ? 'bg-green-500' : ($taskProgress >= 50 ? 'bg-blue-500' : 'bg-yellow-500') }}"
+                                            style="width: {{ min($taskProgress, 100) }}%"></div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Progress Breakdown -->
+                            @if ($totalTasks > 0)
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="p-2 bg-green-50 rounded text-center">
+                                        <p class="text-xs text-green-600 font-medium">Selesai</p>
+                                        <p class="text-lg font-bold text-green-700">
+                                            {{ $project->tasks->where('status', 'completed')->count() }}
+                                        </p>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-center">
+                                        <p class="text-xs text-blue-600 font-medium">Berjalan</p>
+                                        <p class="text-lg font-bold text-blue-700">
+                                            {{ $project->tasks->where('status', 'in_progress')->count() }}
+                                        </p>
+                                    </div>
+                                    <div class="p-2 bg-gray-50 rounded text-center">
+                                        <p class="text-xs text-gray-600 font-medium">Belum Mulai</p>
+                                        <p class="text-lg font-bold text-gray-700">
+                                            {{ $project->tasks->where('status', 'not_started')->count() }}
+                                        </p>
+                                    </div>
+                                    <div class="p-2 bg-yellow-50 rounded text-center">
+                                        <p class="text-xs text-yellow-600 font-medium">Ditunda</p>
+                                        <p class="text-lg font-bold text-yellow-700">
+                                            {{ $project->tasks->where('status', 'on_hold')->count() }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
