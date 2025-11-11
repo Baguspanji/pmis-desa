@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -13,11 +12,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create an admin user
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'full_name' => 'Admin User',
+            'username'  => 'adminuser',
+            'email'     => 'admin@user.com',
+            'role'      => 'admin',
         ]);
+
+        // create operator user
+        User::factory()->create([
+            'full_name' => 'Operator User',
+            'username'  => 'operatoruser',
+            'email'     => 'operator@user.com',
+            'role'      => 'operator',
+        ]);
+
+        // create kepala_desa user
+        User::factory()->create([
+            'full_name' => 'Kepala Desa User',
+            'username'  => 'kepaladesauser',
+            'email'     => 'kepaladesa@user.com',
+            'role'      => 'kepala_desa',
+        ]);
+
+        // create staff user
+        User::factory(4)->create();
+
+        // create programs, projects, tasks, etc. using their respective seeders
+        $this->call(ProgramSeeder::class);
     }
 }
