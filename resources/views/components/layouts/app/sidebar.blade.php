@@ -22,10 +22,13 @@
             <flux:navlist.group :heading="__('Management')" class="grid">
                 <!-- User Management -->
                 <flux:navlist.item icon="users" :href="route('users')" :current="request()->routeIs('users.*')"
-                    wire:navigate>{{ __('Users') }}</flux:navlist.item>
+                    wire:navigate>{{ __('Pengguna') }}</flux:navlist.item>
                 <!-- Project Management -->
                 <flux:navlist.item icon="folder" :href="route('projects')" :current="request()->routeIs('projects.*')"
-                    wire:navigate>{{ __('Projects') }}</flux:navlist.item>
+                    wire:navigate>{{ __('Program') }}</flux:navlist.item>
+                <!-- Task Management -->
+                <flux:navlist.item icon="square-check" :href="route('tasks')" :current="request()->routeIs('tasks.*')"
+                    wire:navigate>{{ __('Tugas') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

@@ -32,4 +32,5 @@ Route::middleware(['auth'])->group(function () {
 
     Volt::route('users', 'user.index')->name('users');
     Volt::route('projects', 'project.index')->name('projects');
+    Volt::route('tasks', 'project-task.index')->name('tasks');
 });

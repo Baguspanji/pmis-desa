@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained('programs')->cascadeOnDelete();
             $table->foreignId('parent_task_id')->nullable()->constrained('tasks')->cascadeOnDelete()->comment('For sub-tasks hierarchy');
             $table->foreignId('assigned_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('status', 50)->default('Pending')->comment("'Pending', 'In Progress', 'Completed', 'Delayed', 'Cancelled'");
-            $table->string('progress_type', 50)->default('Status')->comment("'Status', 'Target'");
-            $table->string('priority', 20)->default('Medium')->comment("'Low', 'Medium', 'High', 'Urgent'");
+            $table->string('status', 50)->default('Pending')->comment("'not_started', 'in_progress', 'completed', 'on_hold', 'cancelled'");
+            $table->string('progress_type', 50)->default('Status')->comment("'status', 'percentage'");
+            $table->string('priority', 20)->default('Medium')->comment("'low', 'Medium', 'high', 'urgent'");
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->decimal('estimated_budget', 15, 2)->default(0.00);
