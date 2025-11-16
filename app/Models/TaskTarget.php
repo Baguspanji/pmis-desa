@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,13 +17,18 @@ class TaskTarget extends Model
     ];
 
     protected $casts = [
-        'target_value' => 'decimal:2',
+        'target_value'   => 'decimal:2',
         'achieved_value' => 'decimal:2',
-        'target_date' => 'date',
+        'target_date'    => 'date',
     ];
 
     public function task(): BelongsTo
     {
         return $this->belongsTo(Task::class);
+    }
+
+    public function logbooks()
+    {
+        return $this->hasMany(TaskLogbook::class);
     }
 }

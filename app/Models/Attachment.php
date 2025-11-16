@@ -14,6 +14,7 @@ class Attachment extends Model
         'file_size',
         'task_id',
         'program_id',
+        'task_logbook_id',
         'uploaded_by',
         'description',
         'uploaded_at',
@@ -36,5 +37,10 @@ class Attachment extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function taskLogbook(): BelongsTo
+    {
+        return $this->belongsTo(TaskLogbook::class, 'task_logbook_id');
     }
 }

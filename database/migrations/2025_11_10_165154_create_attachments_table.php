@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('file_size')->nullable()->comment('Size in bytes');
             $table->foreignId('task_id')->nullable()->constrained('tasks')->cascadeOnDelete();
             $table->foreignId('program_id')->nullable()->constrained('programs')->cascadeOnDelete();
+            $table->foreignId('task_logbook_id')->nullable()->constrained('task_logbooks')->cascadeOnDelete();
             $table->foreignId('uploaded_by')->nullable()->constrained('users')->nullOnDelete();
             $table->text('description')->nullable();
             $table->timestamp('uploaded_at')->useCurrent();

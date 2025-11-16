@@ -54,6 +54,6 @@ class Program extends Model
 
     public function attachments(): HasMany
     {
-        return $this->hasMany(Attachment::class);
+        return $this->hasMany(Attachment::class, 'program_id');
     }
 }

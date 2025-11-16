@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,8 +22,8 @@ class Task extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'start_date'       => 'date',
+        'end_date'         => 'date',
         'estimated_budget' => 'decimal:2',
     ];
 
@@ -60,6 +59,11 @@ class Task extends Model
 
     public function attachments(): HasMany
     {
-        return $this->hasMany(Attachment::class);
+        return $this->hasMany(Attachment::class, 'task_id');
+    }
+
+    public function logbooks(): HasMany
+    {
+        return $this->hasMany(TaskLogbook::class);
     }
 }

@@ -86,7 +86,6 @@ new class extends Component {
                 $target->update([
                     'target_name' => $validated['target_name'],
                     'target_value' => $validated['target_value'],
-                    'achieved_value' => $validated['achieved_value'] ?? 0,
                     'target_date' => $validated['target_date'],
                     'target_unit' => $validated['target_unit'],
                     'notes' => $validated['notes'] ?? null,
@@ -102,7 +101,7 @@ new class extends Component {
                     'task_id' => $this->taskId,
                     'target_name' => $validated['target_name'],
                     'target_value' => $validated['target_value'],
-                    'achieved_value' => $validated['achieved_value'] ?? 0,
+                    'achieved_value' => 0,
                     'target_date' => $validated['target_date'],
                     'target_unit' => $validated['target_unit'],
                     'notes' => $validated['notes'] ?? null,
@@ -209,21 +208,23 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Nilai Tercapai</flux:label>
-                        <flux:input wire:model.live="achieved_value" type="number" step="0.01" min="0"
+                        {{-- <flux:input wire:model.live="achieved_value" type="number" step="0.01" min="0"
                             placeholder="Masukkan nilai yang sudah tercapai" />
                         @error('achieved_value')
                             <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                        <div class="text-xs text-gray-400 mt-1">
-                            Tercapai: {{ number_format((float) ($achieved_value ?: 0), 2, ',', '.') }}
-                        </div>
-                        @if ($target_value > 0 && $achieved_value > 0)
-                            <div
-                                class="text-xs mt-1 {{ ($achieved_value / $target_value) * 100 >= 100 ? 'text-green-600' : 'text-blue-600' }}">
-                                Progress: {{ number_format(($achieved_value / $target_value) * 100, 2) }}%
+                        @enderror --}}
+                        <div class="flex gap-2">
+                            <div class="text-xs text-gray-400 mt-1">
+                                Tercapai: {{ number_format((float) ($achieved_value ?: 0), 2, ',', '.') }}
                             </div>
-                        @endif
-                    </flux:field>
+                            @if ($target_value > 0 && $achieved_value > 0)
+                                <div
+                                    class="text-xs mt-1 {{ ($achieved_value / $target_value) * 100 >= 100 ? 'text-green-600' : 'text-blue-600' }}">
+                                    Progress: {{ number_format(($achieved_value / $target_value) * 100, 2) }}%
+                                </div>
+                            @endif
+                        </flux:field>
+                        </div>
                 </div>
 
                 <!-- Target Date -->

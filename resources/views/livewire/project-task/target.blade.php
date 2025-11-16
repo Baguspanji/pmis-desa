@@ -22,7 +22,7 @@ new class extends Component {
 
     public function loadTask()
     {
-        $this->task = Task::with(['program', 'assignedUser', 'targets'])->findOrFail($this->taskId);
+        $this->task = Task::with(['program', 'assignedUser', 'targets.logbooks'])->findOrFail($this->taskId);
         $this->targets = $this->task->targets;
     }
 
@@ -68,8 +68,8 @@ new class extends Component {
     <x-app-header-page title="Target Tugas: {{ $task->task_name }}"
         description="Kelola target dan pencapaian untuk tugas ini." :breadcrumbs="[
             ['label' => 'Dashboard', 'url' => route('dashboard')],
-            ['label' => 'Program', 'url' => route('projects', $programId)],
-            ['label' => 'Tugas', 'url' => route('projects.tasks', $taskId)],
+            ['label' => 'Program', 'url' => route('projects')],
+            ['label' => 'Tugas', 'url' => route('projects.tasks', $programId)],
             ['label' => 'Target'],
         ]">
         <x-slot:actions>
@@ -100,7 +100,7 @@ new class extends Component {
                     <label class="text-sm font-medium text-gray-700">Status</label>
                     <div class="mt-1">
                         @if ($task->status === 'not_started')
-                            <flux:badge color="gray">Belum Dimulai</flux:badge>
+                            <flux:badge color="sky">Belum Dimulai</flux:badge>
                         @elseif ($task->status === 'in_progress')
                             <flux:badge color="blue">Sedang Berjalan</flux:badge>
                         @elseif ($task->status === 'completed')
@@ -130,13 +130,21 @@ new class extends Component {
                         @php
                             $progressPercentage =
                                 $target->target_value > 0 ? ($target->achieved_value / $target->target_value) * 100 : 0;
+                            $logbookCount = $target->logbooks()->count();
                         @endphp
                         <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-start mb-3">
                                 <div class="flex-1">
-                                    <h4 class="text-base font-semibold text-gray-900 mb-2">
-                                        {{ $target->target_name }}
-                                    </h4>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <h4 class="text-base font-semibold text-gray-900">
+                                            {{ $target->target_name }}
+                                        </h4>
+                                        @if ($logbookCount > 0)
+                                            <flux:badge color="blue" size="sm">
+                                                {{ $logbookCount }} Logbook
+                                            </flux:badge>
+                                        @endif
+                                    </div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm font-medium text-gray-500">Target Date:</span>
                                         <span class="text-sm font-semibold text-gray-900">
@@ -145,14 +153,10 @@ new class extends Component {
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <flux:button size="xs" wire:click="edit({{ $target->id }})" variant="ghost">
-                                        <flux:icon name="pencil" class="w-4 h-4" />
-                                    </flux:button>
-                                    <flux:button size="xs" variant="danger"
+                                    <flux:button icon="square-pen" size="xs" wire:click="edit({{ $target->id }})" variant="ghost"/>
+                                    <flux:button icon="trash" size="xs" variant="danger"
                                         wire:click="deleteTarget({{ $target->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus target ini?">
-                                        <flux:icon name="trash" class="w-4 h-4" />
-                                    </flux:button>
+                                        wire:confirm="Apakah Anda yakin ingin menghapus target ini?"/>
                                 </div>
                             </div>
 
@@ -192,12 +196,31 @@ new class extends Component {
                                     <p class="mt-1 text-sm text-gray-900">{{ $target->notes }}</p>
                                 </div>
                             @endif
+
+                            <!-- Logbook Section -->
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div x-data="{ showLogbooks: false }">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <button @click="showLogbooks = !showLogbooks"
+                                            class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                                            <flux:icon x-show="!showLogbooks" name="chevron-right" class="w-4 h-4" />
+                                            <flux:icon x-show="showLogbooks" name="chevron-down" class="w-4 h-4" />
+                                            <span>Logbook ({{ $logbookCount }})</span>
+                                        </button>
+                                    </div>
+                                    <div x-show="showLogbooks" x-collapse>
+                                        <div class="mt-3">
+                                            @livewire('project-task.logbook-list', ['targetId' => $target->id])
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @else
                 <div class="text-center py-8">
-                    <flux:icon name="target" class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                    <flux:icon name="check-circle" class="w-12 h-12 text-gray-400 mx-auto mb-2" />
                     <p class="text-sm text-gray-500">Belum ada target yang ditambahkan.</p>
                     <p class="text-xs text-gray-400 mt-1">Klik tombol "Tambah Target Baru" untuk memulai.</p>
                 </div>
@@ -225,4 +248,7 @@ new class extends Component {
 
     <!-- Include Target Form Modal -->
     @livewire('project-task.target-form')
+
+    <!-- Include Logbook Form Modal -->
+    @livewire('project-task.logbook-form')
 </div>

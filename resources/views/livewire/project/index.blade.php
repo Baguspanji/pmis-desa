@@ -232,8 +232,10 @@ new class extends Component {
                 </div>
             </div>
         @empty
-            <div class="col-span-full text-center py-12 text-gray-500">
-                Tidak ada data program
+            <div class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500 border border-dashed border-gray-300 rounded-lg">
+                <flux:icon name="document-text" class="w-16 h-16 mb-4 text-gray-400" />
+                <p class="text-lg font-medium text-gray-700">Tidak ada data program</p>
+                <p class="text-sm text-gray-500 mt-1">Belum ada program yang tersedia untuk ditampilkan</p>
             </div>
         @endforelse
     </div>
