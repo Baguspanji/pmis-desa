@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -64,6 +63,7 @@ class User extends Authenticatable
     public function initials(): string
     {
         $name = $this->full_name ?? $this->name;
+
         return Str::of($name)
             ->explode(' ')
             ->take(2)
@@ -100,15 +100,5 @@ class User extends Authenticatable
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
-    }
-
-    public function notifications(): HasMany
-    {
-        return $this->hasMany(Notification::class);
-    }
-
-    public function unreadNotifications(): HasMany
-    {
-        return $this->notifications()->where('is_read', false);
     }
 }

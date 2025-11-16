@@ -7,6 +7,7 @@ use App\Models\TaskTarget;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\LogbookCreated;
 
 new class extends Component {
     use WithFileUploads;
@@ -120,6 +121,12 @@ new class extends Component {
             } else {
                 $logbook = TaskLogbook::create($data);
                 $message = 'Logbook berhasil ditambahkan.';
+
+                // Kirim notifikasi ke supervisor/assigned user
+                $task = Task::find($this->taskId);
+                if ($task->assignedUser) {
+                    $task->assignedUser->notify(new LogbookCreated($logbook));
+                }
             }
 
             // Handle file attachments if any
