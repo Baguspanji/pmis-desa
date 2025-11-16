@@ -145,8 +145,8 @@ new class extends Component {
 
 
     <!-- Filter -->
-    <div class="flex flex-row items-center justify-between mt-6 mb-4 gap-2">
-        <div class="w-1/3">
+    <div class="grid grid-cols-1 lg:flex lg:flex-row items-center justify-between mt-6 mb-4 gap-2">
+        <div class="lg:w-1/3">
             <flux:select wire:model="statusFilter" placeholder="Filter berdasarkan status" wire:change="fetchData">
                 <option value="">Semua Status</option>
                 @foreach ($statuses as $status)
@@ -158,7 +158,7 @@ new class extends Component {
             <flux:input wire:model.debounce.500ms="search" type="text" placeholder="Cari program..."
                 wire:keyup="fetchData" />
         </div>
-        <div class="w-1/3">
+        <div class="lg:w-1/3">
             <flux:select wire:model="yearFilter" placeholder="Filter Tahun" wire:change="fetchData">
                 <option value="">Semua Tahun</option>
                 @foreach ($yearOptions as $year)
@@ -176,7 +176,7 @@ new class extends Component {
                     <div class="flex items-center gap-1 pb-2 border-b border-gray-200">
                         @foreach ($statuses as $status)
                             @if ($project->status === $status->value)
-                                <flux:badge color="sky">{{ $status->name }}</flux:badge>
+                                <flux:badge color="gray">{{ $status->name }}</flux:badge>
                             @endif
                         @endforeach
 

@@ -142,10 +142,9 @@ new class extends Component {
         </x-slot:actions>
     </x-app-header-page>
 
-
     <!-- Filter -->
-    <div class="flex flex-row items-center justify-between mt-6 mb-4 gap-2">
-        <div class="w-1/3">
+    <div class="grid grid-cols-1 lg:flex lg:flex-row items-center justify-between mt-6 mb-4 gap-2">
+        <div class="lg:w-1/3">
             <flux:select wire:model="programFilter" placeholder="Filter berdasarkan program" wire:change="fetchData">
                 <option value="">Semua Program</option>
                 @foreach ($programs as $program)
@@ -153,7 +152,7 @@ new class extends Component {
                 @endforeach
             </flux:select>
         </div>
-        <div class="w-1/3">
+        <div class="lg:w-1/3">
             <flux:select wire:model="statusFilter" placeholder="Filter berdasarkan status" wire:change="fetchData">
                 <option value="">Semua Status</option>
                 @foreach ($statuses as $status)
@@ -175,18 +174,20 @@ new class extends Component {
                     <div class="flex items-center gap-1 pb-2 border-b border-gray-200">
                         @foreach ($statuses as $status)
                             @if ($task->status === $status->value)
-                                <flux:badge color="sky">{{ $status->name }}</flux:badge>
+                                <flux:badge color="gray">{{ $status->name }}</flux:badge>
                             @endif
                         @endforeach
-                        @if ($task->priority === 'high')
-                            <flux:badge color="red">Tinggi</flux:badge>
-                        @elseif ($task->priority === 'medium')
-                            <flux:badge color="yellow">Sedang</flux:badge>
-                        @else
-                            <flux:badge color="green">Rendah</flux:badge>
-                        @endif
 
                         <flux:spacer />
+
+                        @if ($task->priority === 'high')
+                            <flux:badge variant="solid" color="red">Tinggi</flux:badge>
+                        @elseif ($task->priority === 'medium')
+                            <flux:badge variant="solid" color="yellow">Sedang</flux:badge>
+                        @else
+                            <flux:badge variant="solid" color="green">Rendah</flux:badge>
+                        @endif
+
                         <flux:dropdown position="bottom" align="end">
                             <flux:button icon="ellipsis-horizontal" size="sm" variant="ghost" inset="top bottom">
                             </flux:button>
@@ -242,7 +243,8 @@ new class extends Component {
                 </div>
             </div>
         @empty
-            <div class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500 border border-dashed border-gray-300 rounded-lg">
+            <div
+                class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500 border border-dashed border-gray-300 rounded-lg">
                 <flux:icon name="document-text" class="w-16 h-16 mb-4 text-gray-400" />
                 <p class="text-lg font-medium text-gray-700">Tidak ada data tugas</p>
                 <p class="text-sm text-gray-500 mt-1">Belum ada tugas yang tersedia untuk ditampilkan</p>

@@ -54,7 +54,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="project-detail-modal" class="min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal"
+    <flux:modal name="project-detail-modal" class="lg:min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal"
         wire:close="closeModal">
         <form wire:submit="closeModal">
             <div class="flex justify-between pr-8">
@@ -107,7 +107,7 @@ new class extends Component {
                             <label class="text-sm font-medium text-gray-700">Status</label>
                             <div class="mt-1">
                                 @if ($project->status === 'planned')
-                                    <flux:badge color="sky">{{ $this->getStatusLabel($project->status) }}
+                                    <flux:badge color="gray">{{ $this->getStatusLabel($project->status) }}
                                     </flux:badge>
                                 @elseif ($project->status === 'in_progress')
                                     <flux:badge color="blue">{{ $this->getStatusLabel($project->status) }}

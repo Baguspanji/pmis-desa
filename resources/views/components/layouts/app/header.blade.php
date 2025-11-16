@@ -6,8 +6,9 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+    <flux:header container
+        class="border border-transparent bg-[#0054a3] dark:border-zinc-700 dark:bg-zinc-900 lg:rounded-2xl lg:mx-24 lg:mt-2">
+        <flux:sidebar.toggle class="lg:hidden text-white/80!" icon="bars-2" inset="left" />
 
         <a href="{{ route('dashboard') }}" class="ms-2 me-16 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0"
             wire:navigate>
@@ -16,19 +17,29 @@
 
         <flux:navbar class="-mb-px max-lg:hidden">
             <!-- Dashboard -->
-            <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')"
+            <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
+                class="text-white/80! {{ request()->routeIs('dashboard')
+                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                    : '' }}"
                 wire:navigate>
                 {{ __('Dashboard') }}
             </flux:navbar.item>
             <!-- User Management -->
-            <flux:navbar.item :href="route('users')"
+            <flux:navbar.item icon="users" :href="route('users')"
                 :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                    : '' }}"
                 wire:navigate>
                 {{ __('Pengguna') }}
             </flux:navbar.item>
             <!-- Project Management -->
-            <flux:navbar.item :href="route('projects')"
-                :current="request()->routeIs('projects') || request()->routeIs('projects.*')" wire:navigate>
+            <flux:navbar.item icon="folder" :href="route('projects')"
+                :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
+                class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
+                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                    : '' }}"
+                wire:navigate>
                 {{ __('Program') }}
             </flux:navbar.item>
         </flux:navbar>
@@ -37,7 +48,7 @@
 
         <!-- Desktop User Menu -->
         <flux:dropdown position="top" align="end">
-            <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" circle :name="auth()->user()->full_name" />
+            <flux:profile class="cursor-pointer text-white/80!" :initials="auth()->user()->initials()" />
 
             <flux:menu>
                 <flux:menu.radio.group>
@@ -79,8 +90,7 @@
     </flux:header>
 
     <!-- Mobile Menu -->
-    <flux:sidebar stashable sticky
-        class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar stashable sticky class="lg:hidden bg-[#0054a3] border-e dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -88,26 +98,36 @@
         </a>
 
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Platform')">
+            <flux:navlist.group>
+                <!-- Dashboard -->
                 <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')" wire:navigate>
+                    :current="request()->routeIs('dashboard')"
+                    class="text-white/80! {{ request()->routeIs('dashboard')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
-            </flux:navlist.group>
-
-            <flux:navlist.group :heading="__('Management')" class="grid">
                 <!-- User Management -->
                 <flux:navlist.item icon="users" :href="route('users')"
-                    :current="request()->routeIs('users') || request()->routeIs('users.*')" wire:navigate>
+                    :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                    class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
                     {{ __('Pengguna') }}
                 </flux:navlist.item>
                 <!-- Project Management -->
                 <flux:navlist.item icon="folder" :href="route('projects')"
-                    :current="request()->routeIs('projects') || request()->routeIs('projects.*')" wire:navigate>
+                    :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
+                    class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
                     {{ __('Program') }}
                 </flux:navlist.item>
             </flux:navlist.group>
-        </flux:navlist>ß
+        </flux:navlist>
     </flux:sidebar>
 
     {{ $slot }}

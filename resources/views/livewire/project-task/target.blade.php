@@ -100,7 +100,7 @@ new class extends Component {
                     <label class="text-sm font-medium text-gray-700">Status</label>
                     <div class="mt-1">
                         @if ($task->status === 'not_started')
-                            <flux:badge color="sky">Belum Dimulai</flux:badge>
+                            <flux:badge color="gray">Belum Dimulai</flux:badge>
                         @elseif ($task->status === 'in_progress')
                             <flux:badge color="blue">Sedang Berjalan</flux:badge>
                         @elseif ($task->status === 'completed')
@@ -153,10 +153,11 @@ new class extends Component {
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <flux:button icon="square-pen" size="xs" wire:click="edit({{ $target->id }})" variant="ghost"/>
+                                    <flux:button icon="square-pen" size="xs" wire:click="edit({{ $target->id }})"
+                                        variant="ghost" />
                                     <flux:button icon="trash" size="xs" variant="danger"
                                         wire:click="deleteTarget({{ $target->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus target ini?"/>
+                                        wire:confirm="Apakah Anda yakin ingin menghapus target ini?" />
                                 </div>
                             </div>
 
@@ -164,13 +165,15 @@ new class extends Component {
                                 <div class="bg-blue-50 rounded-lg p-3">
                                     <label class="text-xs font-medium text-blue-900">Nilai Target</label>
                                     <p class="mt-1 text-xl font-bold text-blue-900">
-                                        {{ number_format($target->target_value, 2, ',', '.') }} {{ $target->target_unit }}
+                                        {{ number_format($target->target_value, 2, ',', '.') }}
+                                        {{ $target->target_unit }}
                                     </p>
                                 </div>
                                 <div class="bg-green-50 rounded-lg p-3">
                                     <label class="text-xs font-medium text-green-900">Nilai Tercapai</label>
                                     <p class="mt-1 text-xl font-bold text-green-900">
-                                        {{ number_format($target->achieved_value, 2, ',', '.') }} {{ $target->target_unit }}
+                                        {{ number_format($target->achieved_value, 2, ',', '.') }}
+                                        {{ $target->target_unit }}
                                     </p>
                                 </div>
                                 <div class="bg-purple-50 rounded-lg p-3">
@@ -232,15 +235,39 @@ new class extends Component {
             <div class="flex items-start">
                 <flux:icon name="information-circle" class="w-5 h-5 text-blue-600 mt-0.5 mr-2" />
                 <div class="text-sm text-blue-900">
-                    <p class="font-semibold mb-1">Panduan Penggunaan:</p>
-                    <ul class="list-disc list-inside space-y-1">
-                        <li>Tugas dapat memiliki beberapa target dengan tanggal yang berbeda</li>
-                        <li>Nilai target dan nilai tercapai dapat berupa angka desimal (gunakan titik sebagai pemisah
-                            desimal)</li>
-                        <li>Progress akan dihitung secara otomatis: (Nilai Tercapai / Nilai Target) × 100%</li>
-                        <li>Gunakan catatan untuk menambahkan informasi detail tentang setiap target</li>
-                        <li>Klik tombol edit untuk mengubah target yang sudah ada</li>
-                    </ul>
+                    <p class="font-semibold mb-2">Panduan Penggunaan:</p>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="font-medium mb-1">Target:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-2">
+                                <li>Setiap tugas dapat memiliki beberapa target dengan tanggal pencapaian yang berbeda
+                                </li>
+                                <li>Nilai target dan nilai tercapai mendukung angka desimal (gunakan titik sebagai
+                                    pemisah desimal)</li>
+                                <li>Progress dihitung otomatis: (Nilai Tercapai / Nilai Target) × 100%</li>
+                                <li>Tambahkan catatan untuk memberikan konteks atau informasi tambahan pada setiap
+                                    target</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-medium mb-1">Logbook:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-2">
+                                <li>Setiap target dapat memiliki beberapa logbook untuk melacak kemajuan harian</li>
+                                <li>Logbook mencatat aktivitas, pencapaian, dan kendala yang dihadapi</li>
+                                <li>Klik ikon chevron pada bagian Logbook untuk melihat detail catatan</li>
+                                <li>Logbook membantu dokumentasi proses pencapaian target secara detail</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-medium mb-1">Tips:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-2">
+                                <li>Gunakan tombol <span class="font-medium">Edit</span> untuk mengubah data target yang
+                                    sudah ada</li>
+                                <li>Perhatikan badge logbook untuk mengetahui jumlah catatan yang sudah dibuat</li>
+                                <li>Progress bar akan berubah hijau saat mencapai 100%</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

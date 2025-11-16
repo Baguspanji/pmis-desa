@@ -75,7 +75,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="task-detail-modal" class="min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
+    <flux:modal name="task-detail-modal" class="lg:min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
         <form wire:submit="closeModal">
             <div class="flex justify-between pr-8">
                 <flux:heading size="lg">Detail Tugas</flux:heading>
@@ -128,7 +128,7 @@ new class extends Component {
                                 <label class="text-sm font-medium text-gray-700">Status</label>
                                 <div class="mt-1">
                                     @if ($task->status === 'not_started')
-                                        <flux:badge color="sky">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="gray">{{ $this->getStatusLabel($task->status) }}</flux:badge>
                                     @elseif ($task->status === 'in_progress')
                                         <flux:badge color="blue">{{ $this->getStatusLabel($task->status) }}</flux:badge>
                                     @elseif ($task->status === 'completed')
@@ -144,11 +144,11 @@ new class extends Component {
                                 <label class="text-sm font-medium text-gray-700">Prioritas</label>
                                 <div class="mt-1">
                                     @if ($task->priority === 'high')
-                                        <flux:badge color="red">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="red">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @elseif ($task->priority === 'medium')
-                                        <flux:badge color="yellow">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="yellow">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @else
-                                        <flux:badge color="green">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="green">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @endif
                                 </div>
                             </div>

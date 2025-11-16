@@ -154,7 +154,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="target-form" wire:model.self="showModal" class="min-w-[600px]">
+    <flux:modal name="target-form" wire:model.self="showModal" class="lg:min-w-[600px]">
         <form wire:submit.prevent="save">
             <div>
                 <flux:heading size="lg">
