@@ -13,6 +13,7 @@ new class extends Component {
     public $password = '';
     public $role = '';
     public $phone = '';
+    public $position = '';
     public $is_active = true;
 
     public $isEdit = false;
@@ -51,6 +52,7 @@ new class extends Component {
         $this->email = $user->email;
         $this->role = $user->role;
         $this->phone = $user->phone ?? '';
+        $this->position = $user->position ?? '';
         $this->is_active = $user->is_active;
     }
 
@@ -69,6 +71,7 @@ new class extends Component {
         $this->password = '';
         $this->role = '';
         $this->phone = '';
+        $this->position = '';
         $this->is_active = true;
         $this->resetValidation();
     }
@@ -81,6 +84,7 @@ new class extends Component {
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
             'role' => ['required', 'in:admin,operator,kepala_desa,staff'],
             'phone' => ['nullable', 'string', 'max:20'],
+            'position' => ['nullable', 'string', 'max:32'],
             'is_active' => ['boolean'],
         ];
 
@@ -106,6 +110,7 @@ new class extends Component {
                     'email' => $validated['email'],
                     'role' => $validated['role'],
                     'phone' => $validated['phone'] ?? null,
+                    'position' => $validated['position'] ?? null,
                     'is_active' => $this->is_active,
                 ];
 
@@ -129,6 +134,7 @@ new class extends Component {
                     'password' => Hash::make($validated['password']),
                     'role' => $validated['role'],
                     'phone' => $validated['phone'] ?? null,
+                    'position' => $validated['position'] ?? null,
                     'is_active' => $this->is_active,
                 ]);
 
@@ -200,6 +206,17 @@ new class extends Component {
                         <flux:label>Nomor Telepon</flux:label>
                         <flux:input wire:model="phone" type="text" placeholder="Masukkan nomor telepon" />
                         @error('phone')
+                            <flux:error>{{ $message }}</flux:error>
+                        @enderror
+                    </flux:field>
+                </div>
+
+                <!-- Position -->
+                <div>
+                    <flux:field>
+                        <flux:label>Jabatan</flux:label>
+                        <flux:input wire:model="position" type="text" placeholder="Masukkan jabatan" />
+                        @error('position')
                             <flux:error>{{ $message }}</flux:error>
                         @enderror
                     </flux:field>

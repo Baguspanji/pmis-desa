@@ -2,10 +2,15 @@
 
 use Livewire\Volt\Component;
 use App\Models\Program;
+use Livewire\Attributes\Url;
 
 new class extends Component {
+    #[Url('q')]
     public $search = '';
+    #[Url('status')]
     public $statusFilter = '';
+    #[Url('year')]
+    public $yearFilter = '';
 
     public array $projectData = [];
     public $projectPagination = [
@@ -16,6 +21,13 @@ new class extends Component {
     ];
 
     public array $statuses = [];
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
+        'yearFilter' => ['except' => ''],
+    ];
+    public array $yearOptions = [];
     public $projectIdToDelete = null;
 
     protected $listeners = [
@@ -26,6 +38,12 @@ new class extends Component {
     public function mount()
     {
         $this->statuses = [(object) ['name' => 'Direncanakan', 'value' => 'planned'], (object) ['name' => 'Sedang Berjalan', 'value' => 'in_progress'], (object) ['name' => 'Selesai', 'value' => 'completed'], (object) ['name' => 'Ditunda', 'value' => 'on_hold'], (object) ['name' => 'Dibatalkan', 'value' => 'cancelled']];
+
+        // this year and past 5 years
+        $currentYear = date('Y');
+        for ($i = 0; $i < 6; $i++) {
+            $this->yearOptions[] = $currentYear - $i;
+        }
 
         $this->fetchData();
     }
@@ -38,6 +56,10 @@ new class extends Component {
             $query->where(function ($q) {
                 $q->where('program_name', 'like', '%' . $this->search . '%')->orWhere('location', 'like', '%' . $this->search . '%');
             });
+        }
+
+        if ($this->yearFilter) {
+            $query->whereYear('start_date', $this->yearFilter)->orWhereYear('end_date', $this->yearFilter);
         }
 
         if ($this->statusFilter) {
@@ -113,7 +135,7 @@ new class extends Component {
 
 <div>
     <!-- Header Page -->
-    <x-app-header-page title="Program" description="Kelola program/proyek pembangunan desa di sini." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Program']]">
+    <x-app-header-page title="Program" description="Kelola program/proyek desa di sini." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Program']]">
         <x-slot:actions>
             <flux:button wire:click="create" variant="primary">
                 Tambah Program
@@ -136,23 +158,53 @@ new class extends Component {
             <flux:input wire:model.debounce.500ms="search" type="text" placeholder="Cari program..."
                 wire:keyup="fetchData" />
         </div>
+        <div class="w-1/3">
+            <flux:select wire:model="yearFilter" placeholder="Filter Tahun" wire:change="fetchData">
+                <option value="">Semua Tahun</option>
+                @foreach ($yearOptions as $year)
+                    <option value="{{ $year }}">{{ $year }}</option>
+                @endforeach
+            </flux:select>
+        </div>
     </div>
 
     <!-- Table Data -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse ($projectData as $project)
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ Str::limit($project->program_name, 45) }}</h3>
+                <div class="p-6 space-y-2">
+                    <div class="flex items-center gap-1 pb-2 border-b border-gray-200">
                         @foreach ($statuses as $status)
                             @if ($project->status === $status->value)
-                                <flux:badge>{{ $status->name }}</flux:badge>
+                                <flux:badge color="sky">{{ $status->name }}</flux:badge>
                             @endif
                         @endforeach
+
+                        <flux:spacer />
+                        <flux:dropdown position="bottom" align="end">
+                            <flux:button icon="ellipsis-horizontal" size="sm" variant="ghost" inset="top bottom">
+                            </flux:button>
+
+                            <flux:menu>
+                                <flux:menu.item icon="square-check" href="{{ route('projects.tasks', $project->id) }}">
+                                    Lihat Tugas</flux:menu.item>
+                                <flux:menu.item icon="eye" wire:click="viewDetail({{ $project->id }})">Lihat Detail
+                                </flux:menu.item>
+                                <flux:menu.item icon="square-pen" wire:click="edit({{ $project->id }})">Edit
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item icon="trash" variant="danger"
+                                    wire:click="delete({{ $project->id }})">Hapus</flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
                     </div>
 
-                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($project->program_description, 80) }}</p>
+                    <h3 class="text-lg font-semibold text-gray-900 hover:underline cursor-pointer"
+                        wire:click="viewDetail({{ $project->id }})">
+                        {{ Str::limit($project->program_name, 80) }}
+                    </h3>
+
+                    <p class="text-sm text-gray-600">{{ Str::limit($project->program_description, 100) }}</p>
 
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center text-sm text-gray-700">
@@ -161,7 +213,11 @@ new class extends Component {
                         </div>
                         <div class="flex items-center text-sm text-gray-700">
                             <flux:icon name="user" class="w-4 h-4 mr-2" />
-                            <span>{{ $project->pic?->full_name ?? '-' }}</span>
+                            @if ($project->pic?->position)
+                                <span>({{ $project->pic?->position }}) {{ $project->pic?->full_name ?? '-' }}</span>
+                            @else
+                                <span>{{ $project->pic?->full_name ?? '-' }}</span>
+                            @endif
                         </div>
                         <div class="flex items-center text-sm text-gray-700">
                             <flux:icon name="calendar" class="w-4 h-4 mr-2" />
@@ -172,21 +228,6 @@ new class extends Component {
                             <flux:icon name="wallet" class="w-4 h-4 mr-2" />
                             <span>Rp {{ number_format($project->total_budget, 2, ',', '.') }}</span>
                         </div>
-                    </div>
-
-                    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                        <flux:button size="sm" href="{{ route('projects.tasks', $project->id) }}">
-                            <flux:icon name="square-check" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" variant="ghost" wire:click="viewDetail({{ $project->id }})">
-                            <flux:icon name="eye" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" wire:click="edit({{ $project->id }})">
-                            <flux:icon name="square-pen" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" variant="danger" wire:click="delete({{ $project->id }})">
-                            <flux:icon name="trash" class="w-4 h-4" />
-                        </flux:button>
                     </div>
                 </div>
             </div>

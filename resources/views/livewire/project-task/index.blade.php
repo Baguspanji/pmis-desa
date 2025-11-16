@@ -171,28 +171,49 @@ new class extends Component {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse ($taskData as $task)
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ $task->task_name }}</h3>
-                        <div class="flex flex-col gap-1 items-end">
-                            @foreach ($statuses as $status)
-                                @if ($task->status === $status->value)
-                                    <flux:badge>{{ $status->name }}</flux:badge>
-                                @endif
-                            @endforeach
-                            @if ($task->priority === 'high')
-                                <flux:badge color="red">Tinggi</flux:badge>
-                            @elseif ($task->priority === 'medium')
-                                <flux:badge color="yellow">Sedang</flux:badge>
-                            @else
-                                <flux:badge color="green">Rendah</flux:badge>
+                <div class="p-6 space-y-2">
+                    <div class="flex items-center gap-1 pb-2 border-b border-gray-200">
+                        @foreach ($statuses as $status)
+                            @if ($task->status === $status->value)
+                                <flux:badge color="sky">{{ $status->name }}</flux:badge>
                             @endif
-                        </div>
+                        @endforeach
+                        @if ($task->priority === 'high')
+                            <flux:badge color="red">Tinggi</flux:badge>
+                        @elseif ($task->priority === 'medium')
+                            <flux:badge color="yellow">Sedang</flux:badge>
+                        @else
+                            <flux:badge color="green">Rendah</flux:badge>
+                        @endif
+
+                        <flux:spacer />
+                        <flux:dropdown position="bottom" align="end">
+                            <flux:button icon="ellipsis-horizontal" size="sm" variant="ghost" inset="top bottom">
+                            </flux:button>
+
+                            <flux:menu>
+                                <flux:menu.item icon="square-check"
+                                    href="{{ route('projects.tasks.targets', ['id' => $programId, 'taskId' => $task->id]) }}">
+                                    Lihat Tugas</flux:menu.item>
+                                <flux:menu.item icon="eye" wire:click="viewDetail({{ $task->id }})">Lihat Detail
+                                </flux:menu.item>
+                                <flux:menu.item icon="square-pen" wire:click="edit({{ $task->id }})">Edit
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item icon="trash" variant="danger"
+                                    wire:click="delete({{ $task->id }})">Hapus</flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
                     </div>
 
-                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($task->task_description, 80) }}</p>
+                    <h3 class="text-lg font-semibold text-gray-900 hover:underline cursor-pointer"
+                        wire:click="viewDetail({{ $task->id }})">
+                        {{ $task->task_name }}
+                    </h3>
 
-                    <div class="space-y-2 mb-4">
+                    <p class="text-sm text-gray-600">{{ Str::limit($task->task_description, 80) }}</p>
+
+                    <div class="space-y-2">
                         @if ($task->parent_task_id)
                             <div class="flex items-center text-sm text-gray-700">
                                 <flux:icon name="link" class="w-4 h-4 mr-2" />
@@ -205,29 +226,18 @@ new class extends Component {
                         </div>
                         <div class="flex items-center text-sm text-gray-700">
                             <flux:icon name="user" class="w-4 h-4 mr-2" />
-                            <span>{{ $task->assignedUser?->full_name ?? '-' }}</span>
+                            @if ($task->assignedUser?->position)
+                                <span>({{ $task->assignedUser?->position }})
+                                    {{ $task->assignedUser?->full_name ?? '-' }}</span>
+                            @else
+                                <span>{{ $task->assignedUser?->full_name ?? '-' }}</span>
+                            @endif
                         </div>
                         <div class="flex items-center text-sm text-gray-700">
                             <flux:icon name="calendar" class="w-4 h-4 mr-2" />
                             <span>{{ $task->start_date?->format('d/m/Y') }} -
                                 {{ $task->end_date?->format('d/m/Y') }}</span>
                         </div>
-                    </div>
-
-                    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                        <flux:button size="sm"
-                            href="{{ route('projects.tasks.targets', ['id' => $programId, 'taskId' => $task->id]) }}">
-                            <flux:icon name="square-check" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" variant="ghost" wire:click="viewDetail({{ $task->id }})">
-                            <flux:icon name="eye" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" wire:click="edit({{ $task->id }})">
-                            <flux:icon name="square-pen" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" variant="danger" wire:click="delete({{ $task->id }})">
-                            <flux:icon name="trash" class="w-4 h-4" />
-                        </flux:button>
                     </div>
                 </div>
             </div>

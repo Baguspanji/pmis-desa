@@ -17,7 +17,8 @@ return new class extends Migration
             $table->dropColumn('name');
             $table->string('role', 50)->after('password')->comment("'admin', 'operator', 'kepala_desa', 'staff'");
             $table->string('phone', 20)->nullable()->after('email');
-            $table->boolean('is_active')->default(true)->after('phone');
+            $table->string('position', 20)->nullable()->after('phone');
+            $table->boolean('is_active')->default(true)->after('position');
         });
     }
 

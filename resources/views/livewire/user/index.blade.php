@@ -143,7 +143,7 @@ new class extends Component {
                     <x-table.cell>
                         <div class="flex flex-col">
                             <span>{{ $user->full_name }}</span>
-                            <span class="text-sm text-gray-500">{{ $user->phone ?? '-' }}</span>
+                            <span class="text-sm text-gray-500 font-mono">{{ $user->phone ?? '-' }}</span>
                         </div>
                     </x-table.cell>
                     <x-table.cell>
@@ -153,19 +153,23 @@ new class extends Component {
                         </div>
                     </x-table.cell>
                     <x-table.cell>
-                        @foreach ($roles as $role)
-                            @if ($user->role === $role->value)
-                                <flux:badge>{{ $role->name }}</flux:badge>
-                            @endif
-                        @endforeach
+                        <div class="flex flex-col items-start gap-1">
+                            <span class="text-xs font-semibold">
+                                Jabatan: {{ $user->position ? $user->position : '-' }}
+                            </span>
+                            @foreach ($roles as $role)
+                                @if ($user->role === $role->value)
+                                    <span class="text-xs px-2 py-0.5 bg-gray-200 rounded-md">
+                                        {{ $role->name }}
+                                    </span>
+                                @endif
+                            @endforeach
+                        </div>
                     </x-table.cell>
                     <x-table.cell align="center">
-                        <flux:button size="sm" wire:click="edit({{ $user->id }})">
-                            <flux:icon name="square-pen" class="w-4 h-4" />
-                        </flux:button>
-                        <flux:button size="sm" variant="danger" wire:click="delete({{ $user->id }})">
-                            <flux:icon name="trash" class="w-4 h-4" />
-                        </flux:button>
+                        <flux:button icon="square-pen" size="sm" wire:click="edit({{ $user->id }})" />
+                        <flux:button icon="trash" size="sm" variant="danger"
+                            wire:click="delete({{ $user->id }})" />
                     </x-table.cell>
                 </x-table.row>
             @empty

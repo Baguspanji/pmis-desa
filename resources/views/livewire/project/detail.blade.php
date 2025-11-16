@@ -54,10 +54,17 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="project-detail-modal" class="min-w-[700px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
+    <flux:modal name="project-detail-modal" class="min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal"
+        wire:close="closeModal">
         <form wire:submit="closeModal">
-            <div>
+            <div class="flex justify-between pr-8">
                 <flux:heading size="lg">Detail Program</flux:heading>
+                @if ($project)
+                    <a href="{{ route('projects.tasks', $project->id) }}"
+                        class="text-sm text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">
+                        Lihat Tugas & Target Lengkap
+                    </a>
+                @endif
             </div>
 
             @if ($project)
@@ -100,15 +107,20 @@ new class extends Component {
                             <label class="text-sm font-medium text-gray-700">Status</label>
                             <div class="mt-1">
                                 @if ($project->status === 'planned')
-                                    <flux:badge color="gray">{{ $this->getStatusLabel($project->status) }}</flux:badge>
+                                    <flux:badge color="sky">{{ $this->getStatusLabel($project->status) }}
+                                    </flux:badge>
                                 @elseif ($project->status === 'in_progress')
-                                    <flux:badge color="blue">{{ $this->getStatusLabel($project->status) }}</flux:badge>
+                                    <flux:badge color="blue">{{ $this->getStatusLabel($project->status) }}
+                                    </flux:badge>
                                 @elseif ($project->status === 'completed')
-                                    <flux:badge color="green">{{ $this->getStatusLabel($project->status) }}</flux:badge>
+                                    <flux:badge color="green">{{ $this->getStatusLabel($project->status) }}
+                                    </flux:badge>
                                 @elseif ($project->status === 'on_hold')
-                                    <flux:badge color="yellow">{{ $this->getStatusLabel($project->status) }}</flux:badge>
+                                    <flux:badge color="yellow">{{ $this->getStatusLabel($project->status) }}
+                                    </flux:badge>
                                 @else
-                                    <flux:badge color="red">{{ $this->getStatusLabel($project->status) }}</flux:badge>
+                                    <flux:badge color="red">{{ $this->getStatusLabel($project->status) }}
+                                    </flux:badge>
                                 @endif
                             </div>
                         </div>
@@ -149,7 +161,8 @@ new class extends Component {
                                         <div class="flex-1">
                                             <span class="text-sm text-gray-900">{{ $task->task_name }}</span>
                                             @if ($task->task_description)
-                                                <p class="text-xs text-gray-500 mt-1">{{ Str::limit($task->task_description, 80) }}</p>
+                                                <p class="text-xs text-gray-500 mt-1">
+                                                    {{ Str::limit($task->task_description, 80) }}</p>
                                             @endif
                                         </div>
                                         <div class="ml-4">
@@ -174,7 +187,8 @@ new class extends Component {
                     <!-- Targets -->
                     @if ($project->taskTargets && $project->taskTargets->count() > 0)
                         <div class="border-b pb-4">
-                            <h3 class="text-lg font-semibold mb-4">Target Program ({{ $project->taskTargets->count() }})</h3>
+                            <h3 class="text-lg font-semibold mb-4">Target Program
+                                ({{ $project->taskTargets->count() }})</h3>
                             <div class="space-y-2">
                                 @foreach ($project->taskTargets as $target)
                                     <div class="p-2 bg-gray-50 rounded">
@@ -183,7 +197,8 @@ new class extends Component {
                                                 {{ $target->target_name }}
                                             </span>
                                             <span class="text-sm text-gray-600">
-                                                {{ number_format($target->achieved_value ?? 0, 0, ',', '.') }} / {{ number_format($target->target_value, 0, ',', '.') }}
+                                                {{ number_format($target->achieved_value ?? 0, 0, ',', '.') }} /
+                                                {{ number_format($target->target_value, 0, ',', '.') }}
                                                 {{ $target->target_unit }}
                                             </span>
                                         </div>
@@ -257,7 +272,8 @@ new class extends Component {
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="flex justify-between items-center mb-2">
                                         <div>
-                                            <span class="text-sm font-semibold text-gray-900">Progres Berdasarkan Tugas</span>
+                                            <span class="text-sm font-semibold text-gray-900">Progres Berdasarkan
+                                                Tugas</span>
                                             <p class="text-xs text-gray-600 mt-1">
                                                 {{ $completedTasks }} dari {{ $totalTasks }} tugas selesai
                                             </p>

@@ -75,10 +75,16 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="task-detail-modal" class="min-w-[700px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
+    <flux:modal name="task-detail-modal" class="min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
         <form wire:submit="closeModal">
-            <div>
+            <div class="flex justify-between pr-8">
                 <flux:heading size="lg">Detail Tugas</flux:heading>
+                @if ($task)
+                    <a href="{{ route('projects.tasks.targets', ['id' => $task->program->id, 'taskId' => $task->id]) }}"
+                        class="text-sm text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">
+                        Lihat Tugas & Target Lengkap
+                    </a>
+                @endif
             </div>
 
             @if ($task)
@@ -122,7 +128,7 @@ new class extends Component {
                                 <label class="text-sm font-medium text-gray-700">Status</label>
                                 <div class="mt-1">
                                     @if ($task->status === 'not_started')
-                                        <flux:badge color="gray">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="sky">{{ $this->getStatusLabel($task->status) }}</flux:badge>
                                     @elseif ($task->status === 'in_progress')
                                         <flux:badge color="blue">{{ $this->getStatusLabel($task->status) }}</flux:badge>
                                     @elseif ($task->status === 'completed')
