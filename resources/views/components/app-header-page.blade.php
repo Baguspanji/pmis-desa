@@ -29,7 +29,7 @@
         </nav>
     @endif
 
-    <div class="flex flex-row items-center justify-between gap-2">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
         <div class="flex flex-col">
             <flux:heading size="xl">{{ $title }}</flux:heading>
             @if ($description)

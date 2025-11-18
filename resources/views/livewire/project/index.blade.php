@@ -137,12 +137,11 @@ new class extends Component {
     <!-- Header Page -->
     <x-app-header-page title="Program" description="Kelola program/proyek desa di sini." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Program']]">
         <x-slot:actions>
-            <flux:button wire:click="create" variant="primary">
+            <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
                 Tambah Program
             </flux:button>
         </x-slot:actions>
     </x-app-header-page>
-
 
     <!-- Filter -->
     <div class="grid grid-cols-1 lg:flex lg:flex-row items-center justify-between mt-6 mb-4 gap-2">

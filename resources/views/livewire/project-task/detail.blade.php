@@ -81,8 +81,8 @@ new class extends Component {
                 <flux:heading size="lg">Detail Tugas</flux:heading>
                 @if ($task)
                     <a href="{{ route('projects.tasks.targets', ['id' => $task->program->id, 'taskId' => $task->id]) }}"
-                        class="text-sm text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">
-                        Lihat Tugas & Target Lengkap
+                        class="text-sm text-white bg-blue-600 hover:bg-blue-800 rounded px-2 py-0.5 cursor-pointer">
+                        Lihat Target
                     </a>
                 @endif
             </div>

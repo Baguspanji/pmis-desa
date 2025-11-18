@@ -129,14 +129,14 @@ new class extends Component {
 
 <div>
     <!-- Header Page -->
-    <x-app-header-page title="Tugas : {{ $program->program_name }}"
+    <x-app-header-page title="{{ $program->program_name }}"
         description="Kelola tugas-tugas dalam program pembangunan desa." :breadcrumbs="[
             ['label' => 'Dashboard', 'url' => route('dashboard')],
             ['label' => 'Program', 'url' => route('projects')],
             ['label' => 'Tugas'],
         ]">
         <x-slot:actions>
-            <flux:button wire:click="create" variant="primary">
+            <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
                 Tambah Tugas
             </flux:button>
         </x-slot:actions>

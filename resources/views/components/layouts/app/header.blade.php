@@ -24,15 +24,6 @@
                 wire:navigate>
                 {{ __('Dashboard') }}
             </flux:navbar.item>
-            <!-- User Management -->
-            <flux:navbar.item icon="users" :href="route('users')"
-                :current="request()->routeIs('users') || request()->routeIs('users.*')"
-                class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
-                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                    : '' }}"
-                wire:navigate>
-                {{ __('Pengguna') }}
-            </flux:navbar.item>
             <!-- Project Management -->
             <flux:navbar.item icon="folder" :href="route('projects')"
                 :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
@@ -41,6 +32,15 @@
                     : '' }}"
                 wire:navigate>
                 {{ __('Program') }}
+            </flux:navbar.item>
+            <!-- User Management -->
+            <flux:navbar.item icon="users" :href="route('users')"
+                :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                    : '' }}"
+                wire:navigate>
+                {{ __('Pengguna') }}
             </flux:navbar.item>
         </flux:navbar>
 
@@ -108,15 +108,6 @@
                     wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
-                <!-- User Management -->
-                <flux:navlist.item icon="users" :href="route('users')"
-                    :current="request()->routeIs('users') || request()->routeIs('users.*')"
-                    class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
-                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                        : '' }}"
-                    wire:navigate>
-                    {{ __('Pengguna') }}
-                </flux:navlist.item>
                 <!-- Project Management -->
                 <flux:navlist.item icon="folder" :href="route('projects')"
                     :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
@@ -125,6 +116,15 @@
                         : '' }}"
                     wire:navigate>
                     {{ __('Program') }}
+                </flux:navlist.item>
+                <!-- User Management -->
+                <flux:navlist.item icon="users" :href="route('users')"
+                    :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                    class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Pengguna') }}
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

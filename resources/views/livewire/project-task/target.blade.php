@@ -117,7 +117,7 @@ new class extends Component {
 
         <!-- Targets List -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 mb-4">
                 <h3 class="text-lg font-semibold">Daftar Target ({{ count($targets) }})</h3>
                 <flux:button size="sm" wire:click="createNew" variant="primary" icon="plus">
                     Tambah Target Baru

@@ -165,7 +165,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-4 gap-2">
         <h3 class="text-lg font-semibold">Logbook Target ({{ count($logbooks) }})</h3>
         <flux:button size="sm" wire:click="createNew" variant="primary" icon="plus">
             Tambah Logbook
