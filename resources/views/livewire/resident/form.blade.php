@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Resident;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
     public $residentId = null;
@@ -35,39 +36,13 @@ new class extends Component {
 
     public function mount()
     {
-        $this->genders = [
-            ['name' => 'Laki-laki', 'value' => 'male'],
-            ['name' => 'Perempuan', 'value' => 'female'],
-        ];
+        $this->genders = [['name' => 'Laki-laki', 'value' => 'male'], ['name' => 'Perempuan', 'value' => 'female']];
 
-        $this->religions = [
-            ['name' => 'Islam', 'value' => 'Islam'],
-            ['name' => 'Kristen', 'value' => 'Kristen'],
-            ['name' => 'Katolik', 'value' => 'Katolik'],
-            ['name' => 'Hindu', 'value' => 'Hindu'],
-            ['name' => 'Buddha', 'value' => 'Buddha'],
-            ['name' => 'Konghucu', 'value' => 'Konghucu'],
-        ];
+        $this->religions = [['name' => 'Islam', 'value' => 'Islam'], ['name' => 'Kristen', 'value' => 'Kristen'], ['name' => 'Katolik', 'value' => 'Katolik'], ['name' => 'Hindu', 'value' => 'Hindu'], ['name' => 'Buddha', 'value' => 'Buddha'], ['name' => 'Konghucu', 'value' => 'Konghucu']];
 
-        $this->maritalStatuses = [
-            ['name' => 'Belum Kawin', 'value' => 'Belum Kawin'],
-            ['name' => 'Kawin', 'value' => 'Kawin'],
-            ['name' => 'Cerai Hidup', 'value' => 'Cerai Hidup'],
-            ['name' => 'Cerai Mati', 'value' => 'Cerai Mati'],
-        ];
+        $this->maritalStatuses = [['name' => 'Belum Kawin', 'value' => 'Belum Kawin'], ['name' => 'Kawin', 'value' => 'Kawin'], ['name' => 'Cerai Hidup', 'value' => 'Cerai Hidup'], ['name' => 'Cerai Mati', 'value' => 'Cerai Mati']];
 
-        $this->educationLevels = [
-            ['name' => 'Tidak/Belum Sekolah', 'value' => 'Tidak/Belum Sekolah'],
-            ['name' => 'Belum Tamat SD/Sederajat', 'value' => 'Belum Tamat SD/Sederajat'],
-            ['name' => 'Tamat SD/Sederajat', 'value' => 'Tamat SD/Sederajat'],
-            ['name' => 'SLTP/Sederajat', 'value' => 'SLTP/Sederajat'],
-            ['name' => 'SLTA/Sederajat', 'value' => 'SLTA/Sederajat'],
-            ['name' => 'Diploma I/II', 'value' => 'Diploma I/II'],
-            ['name' => 'Akademi/Diploma III/S.Muda', 'value' => 'Akademi/Diploma III/S.Muda'],
-            ['name' => 'Diploma IV/Strata I', 'value' => 'Diploma IV/Strata I'],
-            ['name' => 'Strata II', 'value' => 'Strata II'],
-            ['name' => 'Strata III', 'value' => 'Strata III'],
-        ];
+        $this->educationLevels = [['name' => 'Tidak/Belum Sekolah', 'value' => 'Tidak/Belum Sekolah'], ['name' => 'Belum Tamat SD/Sederajat', 'value' => 'Belum Tamat SD/Sederajat'], ['name' => 'Tamat SD/Sederajat', 'value' => 'Tamat SD/Sederajat'], ['name' => 'SLTP/Sederajat', 'value' => 'SLTP/Sederajat'], ['name' => 'SLTA/Sederajat', 'value' => 'SLTA/Sederajat'], ['name' => 'Diploma I/II', 'value' => 'Diploma I/II'], ['name' => 'Akademi/Diploma III/S.Muda', 'value' => 'Akademi/Diploma III/S.Muda'], ['name' => 'Diploma IV/Strata I', 'value' => 'Diploma IV/Strata I'], ['name' => 'Strata II', 'value' => 'Strata II'], ['name' => 'Strata III', 'value' => 'Strata III']];
     }
 
     public function openModal($residentId = null)
@@ -125,7 +100,13 @@ new class extends Component {
         $this->address = '';
         $this->rt = '';
         $this->rw = '';
-        $this->dusun = '';
+
+        if (Auth::user()->role == 'kasun') {
+            $this->dusun = Auth::user()->dusun;
+        } else {
+            $this->dusun = '';
+        }
+
         $this->religion = '';
         $this->marital_status = '';
         $this->occupation = '';
@@ -263,7 +244,8 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Nama Lengkap <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model="full_name" type="text" placeholder="Masukkan nama lengkap" required />
+                        <flux:input wire:model="full_name" type="text" placeholder="Masukkan nama lengkap"
+                            required />
                         @error('full_name')
                             <flux:error>{{ $message }}</flux:error>
                         @enderror
@@ -339,13 +321,23 @@ new class extends Component {
                         </flux:field>
                     </div>
                     <div>
-                        <flux:field>
-                            <flux:label>Dusun</flux:label>
-                            <flux:input wire:model="dusun" type="text" placeholder="Nama Dusun" />
-                            @error('dusun')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
-                        </flux:field>
+                        @can('kasun')
+                            <flux:field>
+                                <flux:label>Dusun</flux:label>
+                                <flux:input wire:model="dusun" type="text" placeholder="Nama Dusun" disabled/>
+                                @error('dusun')
+                                    <flux:error>{{ $message }}</flux:error>
+                                @enderror
+                            </flux:field>
+                        @else
+                            <flux:field>
+                                <flux:label>Dusun</flux:label>
+                                <flux:input wire:model="dusun" type="text" placeholder="Nama Dusun" />
+                                @error('dusun')
+                                    <flux:error>{{ $message }}</flux:error>
+                                @enderror
+                            </flux:field>
+                        @endcan
                     </div>
                 </div>
 

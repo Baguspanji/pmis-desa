@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Task;
 use App\Models\Program;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
     public $search = '';
@@ -48,6 +49,10 @@ new class extends Component {
     public function fetchData()
     {
         $query = Task::with(['program', 'assignedUser', 'parentTask']);
+
+        if (in_array(Auth::user()->role, ['staff', 'kasun'])) {
+            $query->where('assigned_user_id', Auth::id())->orWhere('assigned_user_id', null);
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -135,11 +140,13 @@ new class extends Component {
             ['label' => 'Program', 'url' => route('projects')],
             ['label' => 'Tugas'],
         ]">
-        <x-slot:actions>
-            <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
-                Tambah Tugas
-            </flux:button>
-        </x-slot:actions>
+        @canany(['admin', 'operator'])
+            <x-slot:actions>
+                <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
+                    Tambah Tugas
+                </flux:button>
+            </x-slot:actions>
+        @endcanany
     </x-app-header-page>
 
     <!-- Filter -->

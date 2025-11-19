@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Component;
 use App\Models\Resident;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
     public $search = '';
@@ -29,22 +30,12 @@ new class extends Component {
 
     public function mount()
     {
-        $this->genders = [
-            (object) ['name' => 'Laki-laki', 'value' => 'male'],
-            (object) ['name' => 'Perempuan', 'value' => 'female'],
-        ];
+        $this->genders = [(object) ['name' => 'Laki-laki', 'value' => 'male'], (object) ['name' => 'Perempuan', 'value' => 'female']];
 
-        $this->statuses = [
-            (object) ['name' => 'Aktif', 'value' => '1'],
-            (object) ['name' => 'Tidak Aktif', 'value' => '0'],
-        ];
+        $this->statuses = [(object) ['name' => 'Aktif', 'value' => '1'], (object) ['name' => 'Tidak Aktif', 'value' => '0']];
 
         // Get unique dusuns from residents
-        $uniqueDusuns = Resident::whereNotNull('dusun')
-            ->distinct()
-            ->pluck('dusun')
-            ->map(fn($dusun) => (object) ['name' => $dusun, 'value' => $dusun])
-            ->toArray();
+        $uniqueDusuns = Resident::whereNotNull('dusun')->distinct()->pluck('dusun')->map(fn($dusun) => (object) ['name' => $dusun, 'value' => $dusun])->toArray();
 
         $this->dusuns = $uniqueDusuns;
 
@@ -54,6 +45,10 @@ new class extends Component {
     public function fetchData()
     {
         $query = Resident::query()->orderBy('created_at', 'desc');
+
+        if (Auth::user()->role == 'kasun') {
+            $query->where('dusun', Auth::user()->dusun);
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -154,14 +149,16 @@ new class extends Component {
                 @endforeach
             </flux:select>
         </div>
-        <div class="w-full lg:w-1/4">
-            <flux:select wire:model="dusunFilter" placeholder="Filter Dusun" wire:change="fetchData">
-                <option value="">Semua Dusun</option>
-                @foreach ($dusuns as $dusun)
-                    <option value="{{ $dusun->value }}">{{ $dusun->name }}</option>
-                @endforeach
-            </flux:select>
-        </div>
+        @canany(['admin', 'operator'])
+            <div class="w-full lg:w-1/4">
+                <flux:select wire:model="dusunFilter" placeholder="Filter Dusun" wire:change="fetchData">
+                    <option value="">Semua Dusun</option>
+                    @foreach ($dusuns as $dusun)
+                        <option value="{{ $dusun->value }}">{{ $dusun->name }}</option>
+                    @endforeach
+                </flux:select>
+            </div>
+        @endcanany
         <div class="w-full lg:w-1/4">
             <flux:select wire:model="statusFilter" placeholder="Filter Status" wire:change="fetchData">
                 <option value="">Semua Status</option>
@@ -171,8 +168,8 @@ new class extends Component {
             </flux:select>
         </div>
         <div class="w-full">
-            <flux:input wire:model.debounce.500ms="search" type="text" placeholder="Cari warga (nama, NIK, KK, telepon)..."
-                wire:keyup="fetchData" />
+            <flux:input wire:model.debounce.500ms="search" type="text"
+                placeholder="Cari warga (nama, NIK, KK, telepon)..." wire:keyup="fetchData" />
         </div>
     </div>
 

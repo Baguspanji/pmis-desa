@@ -16,41 +16,47 @@
         </a>
 
         <flux:navbar class="-mb-px max-lg:hidden">
-            <!-- Dashboard -->
-            <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                class="text-white/80! {{ request()->routeIs('dashboard')
-                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                    : '' }}"
-                wire:navigate>
-                {{ __('Dashboard') }}
-            </flux:navbar.item>
-            <!-- Project Management -->
-            <flux:navbar.item icon="folder" :href="route('projects')"
-                :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
-                class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
-                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                    : '' }}"
-                wire:navigate>
-                {{ __('Program') }}
-            </flux:navbar.item>
-            <!-- User Management -->
-            <flux:navbar.item icon="users" :href="route('users')"
-                :current="request()->routeIs('users') || request()->routeIs('users.*')"
-                class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
-                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                    : '' }}"
-                wire:navigate>
-                {{ __('Pengguna') }}
-            </flux:navbar.item>
-            <!-- Resident Management -->
-            <flux:navbar.item icon="user-group" :href="route('residents')"
-                :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
-                class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
-                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                    : '' }}"
-                wire:navigate>
-                {{ __('Warga') }}
-            </flux:navbar.item>
+            @canany(['admin', 'operator', 'kepala_desa', 'staff', 'kasun'])
+                <!-- Dashboard -->
+                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
+                    class="text-white/80! {{ request()->routeIs('dashboard')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Dashboard') }}
+                </flux:navbar.item>
+                <!-- Project Management -->
+                <flux:navbar.item icon="folder" :href="route('projects')"
+                    :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
+                    class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Program') }}
+                </flux:navbar.item>
+            @endcanany
+            @canany(['admin', 'operator'])
+                <!-- User Management -->
+                <flux:navbar.item icon="users" :href="route('users')"
+                    :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                    class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Pengguna') }}
+                </flux:navbar.item>
+            @endcanany
+            @canany(['admin', 'operator', 'kepala_desa', 'kasun'])
+                <!-- Resident Management -->
+                <flux:navbar.item icon="user-group" :href="route('residents')"
+                    :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
+                    class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Warga') }}
+                </flux:navbar.item>
+            @endcanany
         </flux:navbar>
 
         <flux:spacer />

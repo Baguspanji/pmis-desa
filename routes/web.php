@@ -32,7 +32,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('projects/{id}/tasks', 'project-task.index')->name('projects.tasks');
     Volt::route('projects/{id}/tasks/{taskId}/targets', 'project-task.target')->name('projects.tasks.targets');
 
-    Volt::route('users', 'user.index')->name('users');
+    Route::middleware(['role:admin|operator'])->group(function () {
+        Volt::route('users', 'user.index')->name('users');
+    });
 
     Volt::route('residents', 'resident.index')->name('residents');
 });

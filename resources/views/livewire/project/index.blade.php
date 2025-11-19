@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Program;
 use Livewire\Attributes\Url;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
     #[Url('q')]
@@ -51,6 +52,11 @@ new class extends Component {
     public function fetchData()
     {
         $query = Program::with(['pic', 'creator']);
+
+        if (in_array(Auth::user()->role, ['staff', 'kasun'])) {
+            $query->where('pic_user_id', Auth::id())
+                ->orWhere('pic_user_id', null);
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -136,11 +142,13 @@ new class extends Component {
 <div>
     <!-- Header Page -->
     <x-app-header-page title="Program" description="Kelola program/proyek desa di sini." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Program']]">
-        <x-slot:actions>
-            <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
-                Tambah Program
-            </flux:button>
-        </x-slot:actions>
+        @canany(['admin', 'operator'])
+            <x-slot:actions>
+                <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
+                    Tambah Program
+                </flux:button>
+            </x-slot:actions>
+        @endcanany
     </x-app-header-page>
 
     <!-- Filter -->
@@ -231,7 +239,8 @@ new class extends Component {
                 </div>
             </div>
         @empty
-            <div class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500 border border-dashed border-gray-300 rounded-lg">
+            <div
+                class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500 border border-dashed border-gray-300 rounded-lg">
                 <flux:icon name="document-text" class="w-16 h-16 mb-4 text-gray-400" />
                 <p class="text-lg font-medium text-gray-700">Tidak ada data program</p>
                 <p class="text-sm text-gray-500 mt-1">Belum ada program yang tersedia untuk ditampilkan</p>
