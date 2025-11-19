@@ -4,12 +4,14 @@ use Livewire\Volt\Component;
 use App\Models\User;
 use App\Models\Program;
 use App\Models\Task;
+use App\Models\Resident;
 use Illuminate\Support\Facades\DB;
 
 new class extends Component {
     public int $totalUsers = 0;
     public int $totalPrograms = 0;
     public int $totalTasks = 0;
+    public int $totalResidents = 0;
     public array $chartData = [];
 
     public function mount(): void
@@ -17,6 +19,7 @@ new class extends Component {
         $this->totalUsers = User::count();
         $this->totalPrograms = Program::count();
         $this->totalTasks = Task::count();
+        $this->totalResidents = Resident::count();
         $this->loadChartData();
     }
 
@@ -61,7 +64,7 @@ new class extends Component {
 
 <div>
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl pt-12">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div class="grid auto-rows-min gap-4 md:grid-cols-4">
             {{-- Total Pengguna --}}
             <div
                 class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
@@ -112,6 +115,24 @@ new class extends Component {
                     </svg>
                 </div>
             </div>
+
+            {{-- Total Penduduk --}}
+            <div
+                class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
+                <div class="flex flex-col gap-2">
+                    <div class="text-sm font-medium text-neutral-500 dark:text-neutral-400">Total Penduduk</div>
+                    <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+                        {{ number_format($totalResidents) }}</div>
+                </div>
+                <div class="absolute right-4 top-4 rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
+                    <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+            </div>
+
         </div>
 
         {{-- Bar Chart: Program & Tugas by Month --}}

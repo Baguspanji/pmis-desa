@@ -124,7 +124,7 @@ new class extends Component {
     public function getLogTypeLabel($type)
     {
         return match ($type) {
-            'progress' => 'Progress',
+            'progress_update' => 'Progress',
             'milestone' => 'Milestone',
             'issue' => 'Issue',
             'note' => 'Catatan',
@@ -135,7 +135,7 @@ new class extends Component {
     public function getLogTypeBadgeColor($type)
     {
         return match ($type) {
-            'progress' => 'blue',
+            'progress_update' => 'blue',
             'milestone' => 'green',
             'issue' => 'red',
             'note' => 'gray',
@@ -210,9 +210,11 @@ new class extends Component {
                         </div>
                         <div class="flex gap-2">
                             @if ($logbook->status !== 'verified')
-                                <flux:button icon="check-circle" size="xs"
-                                    wire:click="verifyLogbook({{ $logbook->id }})" variant="ghost"
-                                    title="Verifikasi" />
+                                @canany(['admin', 'operator'])
+                                    <flux:button icon="check-circle" size="xs"
+                                        wire:click="verifyLogbook({{ $logbook->id }})" variant="ghost"
+                                        title="Verifikasi" />
+                                @endcanany
                                 <flux:button icon="square-pen" size="xs" wire:click="edit({{ $logbook->id }})"
                                     variant="ghost" title="Edit" />
                             @endif

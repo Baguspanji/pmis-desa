@@ -141,7 +141,7 @@ new class extends Component {
                                         </h4>
                                         @if ($logbookCount > 0)
                                             <flux:badge color="blue" size="sm">
-                                                {{ $logbookCount }} Logbook
+                                                {{ $logbookCount }} - Logbook
                                             </flux:badge>
                                         @endif
                                     </div>

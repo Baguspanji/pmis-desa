@@ -51,11 +51,13 @@ new class extends Component {
 
     public function fetchData()
     {
+        // \Illuminate\Support\Facades\DB::enableQueryLog();
         $query = Program::with(['pic', 'creator']);
 
         if (in_array(Auth::user()->role, ['staff', 'kasun'])) {
-            $query->where('pic_user_id', Auth::id())
-                ->orWhere('pic_user_id', null);
+            $query->where(function ($q) {
+                $q->where('pic_user_id', Auth::id())->orWhere('pic_user_id', null);
+            });
         }
 
         if ($this->search) {
@@ -65,7 +67,9 @@ new class extends Component {
         }
 
         if ($this->yearFilter) {
-            $query->whereYear('start_date', $this->yearFilter)->orWhereYear('end_date', $this->yearFilter);
+            $query->where(function ($q) {
+                $q->whereYear('start_date', $this->yearFilter)->orWhereYear('end_date', $this->yearFilter);
+            });
         }
 
         if ($this->statusFilter) {
@@ -73,6 +77,8 @@ new class extends Component {
         }
 
         $paginated = $query->paginate(10);
+
+        // dd(Illuminate\Support\Facades\DB::getQueryLog());
 
         $this->projectData = $paginated->items();
         $this->projectPagination = [
@@ -197,11 +203,13 @@ new class extends Component {
                                     Lihat Tugas</flux:menu.item>
                                 <flux:menu.item icon="eye" wire:click="viewDetail({{ $project->id }})">Lihat Detail
                                 </flux:menu.item>
-                                <flux:menu.item icon="square-pen" wire:click="edit({{ $project->id }})">Edit
-                                </flux:menu.item>
-                                <flux:menu.separator />
-                                <flux:menu.item icon="trash" variant="danger"
-                                    wire:click="delete({{ $project->id }})">Hapus</flux:menu.item>
+                                @canany(['admin', 'operator'])
+                                    <flux:menu.item icon="square-pen" wire:click="edit({{ $project->id }})">Edit
+                                    </flux:menu.item>
+                                    <flux:menu.separator />
+                                    <flux:menu.item icon="trash" variant="danger"
+                                        wire:click="delete({{ $project->id }})">Hapus</flux:menu.item>
+                                @endcanany
                             </flux:menu>
                         </flux:dropdown>
                     </div>
