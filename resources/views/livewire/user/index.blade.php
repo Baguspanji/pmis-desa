@@ -25,7 +25,7 @@ new class extends Component {
 
     public function mount()
     {
-        $this->roles = [(object) ['name' => 'Admin', 'value' => 'admin'], (object) ['name' => 'Operator', 'value' => 'operator'], (object) ['name' => 'Kepala Desa', 'value' => 'kepala_desa'], (object) ['name' => 'Staff', 'value' => 'staff']];
+        $this->roles = [(object) ['name' => 'Admin', 'value' => 'admin'], (object) ['name' => 'Operator', 'value' => 'operator'], (object) ['name' => 'Kepala Desa', 'value' => 'kepala_desa'], (object) ['name' => 'Kepala Dusun', 'value' => 'kasun'], (object) ['name' => 'Staff', 'value' => 'staff']];
 
         $this->fetchData();
     }
@@ -154,9 +154,15 @@ new class extends Component {
                     </x-table.cell>
                     <x-table.cell>
                         <div class="flex flex-col items-start gap-1">
-                            <span class="text-xs font-semibold">
-                                Jabatan: {{ $user->position ? $user->position : '-' }}
-                            </span>
+                            @if ($user->role == 'kasun')
+                                <span class="text-xs font-semibold">
+                                    Dusun: {{ $user->dusun ? $user->dusun : '-' }}
+                                </span>
+                            @else
+                                <span class="text-xs font-semibold">
+                                    Jabatan: {{ $user->position ? $user->position : '-' }}
+                                </span>
+                            @endif
                             @foreach ($roles as $role)
                                 @if ($user->role === $role->value)
                                     <span class="text-xs px-2 py-0.5 bg-gray-200 rounded-md">
@@ -167,8 +173,8 @@ new class extends Component {
                         </div>
                     </x-table.cell>
                     <x-table.cell align="center">
-                        <flux:button icon="square-pen" size="sm" wire:click="edit({{ $user->id }})" />
-                        <flux:button icon="trash" size="sm" variant="danger"
+                        <flux:button icon="square-pen" size="xs" wire:click="edit({{ $user->id }})" />
+                        <flux:button icon="trash" size="xs" variant="danger"
                             wire:click="delete({{ $user->id }})" />
                     </x-table.cell>
                 </x-table.row>

@@ -42,6 +42,15 @@
                 wire:navigate>
                 {{ __('Pengguna') }}
             </flux:navbar.item>
+            <!-- Resident Management -->
+            <flux:navbar.item icon="user-group" :href="route('residents')"
+                :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
+                class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
+                    ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                    : '' }}"
+                wire:navigate>
+                {{ __('Warga') }}
+            </flux:navbar.item>
         </flux:navbar>
 
         <flux:spacer />
@@ -125,6 +134,15 @@
                         : '' }}"
                     wire:navigate>
                     {{ __('Pengguna') }}
+                </flux:navlist.item>
+                <!-- Resident Management -->
+                <flux:navlist.item icon="user-group" :href="route('residents')"
+                    :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
+                    class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
+                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                        : '' }}"
+                    wire:navigate>
+                    {{ __('Warga') }}
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

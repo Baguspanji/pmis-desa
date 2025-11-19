@@ -14,6 +14,7 @@ new class extends Component {
     public $role = '';
     public $phone = '';
     public $position = '';
+    public $dusun = '';
     public $is_active = true;
 
     public $isEdit = false;
@@ -25,7 +26,7 @@ new class extends Component {
 
     public function mount()
     {
-        $this->roles = [['name' => 'Admin', 'value' => 'admin'], ['name' => 'Operator', 'value' => 'operator'], ['name' => 'Kepala Desa', 'value' => 'kepala_desa'], ['name' => 'Staff', 'value' => 'staff']];
+        $this->roles = [['name' => 'Admin', 'value' => 'admin'], ['name' => 'Operator', 'value' => 'operator'], ['name' => 'Kepala Desa', 'value' => 'kepala_desa'], ['name' => 'Kepala Dusun', 'value' => 'kasun'], ['name' => 'Staff', 'value' => 'staff']];
     }
 
     public function openModal($userId = null)
@@ -53,6 +54,7 @@ new class extends Component {
         $this->role = $user->role;
         $this->phone = $user->phone ?? '';
         $this->position = $user->position ?? '';
+        $this->dusun = $user->dusun ?? '';
         $this->is_active = $user->is_active;
     }
 
@@ -72,6 +74,7 @@ new class extends Component {
         $this->role = '';
         $this->phone = '';
         $this->position = '';
+        $this->dusun = '';
         $this->is_active = true;
         $this->resetValidation();
     }
@@ -82,9 +85,10 @@ new class extends Component {
             'full_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($this->userId)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
-            'role' => ['required', 'in:admin,operator,kepala_desa,staff'],
+            'role' => ['required', 'in:admin,operator,kepala_desa,kasun,staff'],
             'phone' => ['nullable', 'string', 'max:20'],
             'position' => ['nullable', 'string', 'max:32'],
+            'dusun' => ['nullable', 'string', 'max:32'],
             'is_active' => ['boolean'],
         ];
 
@@ -111,6 +115,7 @@ new class extends Component {
                     'role' => $validated['role'],
                     'phone' => $validated['phone'] ?? null,
                     'position' => $validated['position'] ?? null,
+                    'dusun' => $validated['dusun'] ?? null,
                     'is_active' => $this->is_active,
                 ];
 
@@ -135,6 +140,7 @@ new class extends Component {
                     'role' => $validated['role'],
                     'phone' => $validated['phone'] ?? null,
                     'position' => $validated['position'] ?? null,
+                    'dusun' => $validated['dusun'] ?? null,
                     'is_active' => $this->is_active,
                 ]);
 
@@ -211,22 +217,11 @@ new class extends Component {
                     </flux:field>
                 </div>
 
-                <!-- Position -->
-                <div>
-                    <flux:field>
-                        <flux:label>Jabatan</flux:label>
-                        <flux:input wire:model="position" type="text" placeholder="Masukkan jabatan" />
-                        @error('position')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                    </flux:field>
-                </div>
-
                 <!-- Role -->
                 <div>
                     <flux:field>
                         <flux:label>Peran <span class="text-red-500">*</span></flux:label>
-                        <flux:select wire:model="role" placeholder="Pilih peran" required>
+                        <flux:select wire:model.live="role" placeholder="Pilih peran" required>
                             @foreach ($roles as $role)
                                 <option value="{{ $role['value'] }}">{{ $role['name'] }}</option>
                             @endforeach
@@ -236,6 +231,30 @@ new class extends Component {
                         @enderror
                     </flux:field>
                 </div>
+
+                <!-- Dusun -->
+                @if ($this->role === 'kasun')
+                    <div>
+                        <flux:field>
+                            <flux:label>Dusun</flux:label>
+                            <flux:input wire:model="dusun" type="text" placeholder="Masukkan dusun" />
+                            @error('dusun')
+                                <flux:error>{{ $message }}</flux:error>
+                            @enderror
+                        </flux:field>
+                    </div>
+                @else
+                    <!-- Position -->
+                    <div>
+                        <flux:field>
+                            <flux:label>Jabatan</flux:label>
+                            <flux:input wire:model="position" type="text" placeholder="Masukkan jabatan" />
+                            @error('position')
+                                <flux:error>{{ $message }}</flux:error>
+                            @enderror
+                        </flux:field>
+                    </div>
+                @endif
 
                 <!-- Password -->
                 <div>

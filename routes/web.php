@@ -28,8 +28,11 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 
-    Volt::route('users', 'user.index')->name('users');
     Volt::route('projects', 'project.index')->name('projects');
     Volt::route('projects/{id}/tasks', 'project-task.index')->name('projects.tasks');
     Volt::route('projects/{id}/tasks/{taskId}/targets', 'project-task.target')->name('projects.tasks.targets');
+
+    Volt::route('users', 'user.index')->name('users');
+
+    Volt::route('residents', 'resident.index')->name('residents');
 });
