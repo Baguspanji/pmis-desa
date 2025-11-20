@@ -134,11 +134,14 @@
                                 fill="white" />
                         </svg>
                     </div>
-                    <div class="flex flex-col justify-center">
+                    <div class="flex flex-col justify-center relative">
                         <h3 class="text-xl font-semibold mb-2">Bantuan Sosial</h3>
                         <p class="text-base leading-tight text-white/90 mb-3">
                             Menyimpan dan mengelola data penerima bantuan sosial
                         </p>
+                        <span class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                            Coming Soon
+                        </span>
                     </div>
                 </div>
 
@@ -159,11 +162,14 @@
                                 fill="white" />
                         </svg>
                     </div>
-                    <div class="flex flex-col justify-center">
+                    <div class="flex flex-col justify-center relative">
                         <h3 class="text-xl font-semibold mb-2">Web Profile</h3>
                         <p class="text-base leading-tight mb-3">
                             Website profil untuk meningkatkan potensi wisata desa
                         </p>
+                        <span class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-white/50">
+                            Coming Soon
+                        </span>
                     </div>
                 </div>
 
