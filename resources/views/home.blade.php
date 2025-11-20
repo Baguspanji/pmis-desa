@@ -21,14 +21,14 @@
                     <input type="text"
                         class="px-4 py-2 border border-white/30 bg-white/10 backdrop-blur-sm rounded-full w-64 text-sm text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
                         placeholder="Cari Program">
-                    <div
+                    <a href="{{ route('dashboard') }}"
                         class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-white/30 transition">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2" />
                             <path d="M6 21V19C6 16.7909 7.79086 15 10 15H14C16.2091 15 18 16.7909 18 19V21"
                                 stroke="white" stroke-width="2" />
                         </svg>
-                    </div>
+                    </a>
                 </div>
             </div>
         </header>
