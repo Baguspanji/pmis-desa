@@ -5,7 +5,7 @@ use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return view('home');
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
