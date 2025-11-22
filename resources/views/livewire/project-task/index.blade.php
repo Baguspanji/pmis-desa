@@ -135,13 +135,21 @@ new class extends Component {
             ['label' => 'Program', 'url' => route('projects')],
             ['label' => 'Tugas'],
         ]">
-        @canany(['admin', 'operator'])
-            <x-slot:actions>
-                <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
-                    Tambah Tugas
+        <x-slot:actions>
+            <div class="flex gap-2 w-full lg:w-auto">
+                <flux:button href="{{ route('programs.tasks.report.pdf', ['programId' => $programId]) }}"
+                    icon="document-text"
+                    variant="outline"
+                    class="flex-1 lg:flex-initial">
+                    Export PDF
                 </flux:button>
-            </x-slot:actions>
-        @endcanany
+                @canany(['admin', 'operator'])
+                    <flux:button wire:click="create" variant="primary" class="flex-1 lg:flex-initial">
+                        Tambah Tugas
+                    </flux:button>
+                @endcanany
+            </div>
+        </x-slot:actions>
     </x-app-header-page>
 
     <!-- Filter -->
@@ -191,6 +199,10 @@ new class extends Component {
                                     href="{{ route('projects.tasks.targets', ['id' => $programId, 'taskId' => $task->id]) }}">
                                     Lihat Tugas</flux:menu.item>
                                 <flux:menu.item icon="eye" wire:click="viewDetail({{ $task->id }})">Lihat Detail
+                                </flux:menu.item>
+                                <flux:menu.item icon="document-text"
+                                    href="{{ route('tasks.report.pdf', ['taskId' => $task->id]) }}">
+                                    Export PDF
                                 </flux:menu.item>
                                 @canany(['admin', 'operator'])
                                     <flux:menu.item icon="square-pen" wire:click="edit({{ $task->id }})">Edit

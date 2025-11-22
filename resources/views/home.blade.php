@@ -47,7 +47,7 @@
                     Kelompok Sadar Wisata (POKDARWIS) yang beranggotakan masyarakat setempat.
                 </p>
                 <button onclick="document.getElementById('features').scrollIntoView({ behavior: 'smooth' })"
-                    class="bg-[#FDB913] hover:bg-yellow-500 text-white px-9 py-2 rounded-full text-xl font-semibold transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+                    class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-9 py-2 rounded-full text-xl font-semibold transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer">
                     Selengkapnya
                 </button>
             </div>

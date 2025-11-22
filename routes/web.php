@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\TaskReportController;
 
 Route::get('/', function () {
     return view('home');
@@ -31,6 +32,12 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('projects', 'project.index')->name('projects');
     Volt::route('projects/{id}/tasks', 'project-task.index')->name('projects.tasks');
     Volt::route('projects/{id}/tasks/{taskId}/targets', 'project-task.target')->name('projects.tasks.targets');
+
+    // PDF Report Routes
+    Route::get('tasks/{taskId}/report/pdf', [TaskReportController::class, 'generateTaskReport'])
+        ->name('tasks.report.pdf');
+    Route::get('programs/{programId}/tasks/report/pdf', [TaskReportController::class, 'generateProgramTasksReport'])
+        ->name('programs.tasks.report.pdf');
 
     Route::middleware(['role:admin|operator'])->group(function () {
         Volt::route('users', 'user.index')->name('users');

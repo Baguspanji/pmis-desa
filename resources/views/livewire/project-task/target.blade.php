@@ -10,8 +10,12 @@ new class extends Component {
     public $taskId;
     public $task;
     public $targets = [];
+    public $budgetRealizations = [];
+    public $totalIncome = 0;
+    public $totalExpense = 0;
+    public $netBalance = 0;
 
-    protected $listeners = ['target-saved' => 'loadTask'];
+    protected $listeners = ['target-saved' => 'loadTask', 'budget-saved' => 'loadTask'];
 
     public function mount($id, $taskId)
     {
@@ -22,8 +26,14 @@ new class extends Component {
 
     public function loadTask()
     {
-        $this->task = Task::with(['program', 'assignedUser', 'targets.logbooks'])->findOrFail($this->taskId);
+        $this->task = Task::with(['program', 'assignedUser', 'targets.logbooks', 'budgetRealizations'])->findOrFail($this->taskId);
         $this->targets = $this->task->targets;
+        $this->budgetRealizations = $this->task->budgetRealizations()->orderBy('transaction_date', 'desc')->get();
+
+        // Calculate budget summary
+        $this->totalIncome = $this->budgetRealizations->where('transaction_type', 'income')->sum('amount');
+        $this->totalExpense = $this->budgetRealizations->where('transaction_type', 'expense')->sum('amount');
+        $this->netBalance = $this->totalIncome - $this->totalExpense;
     }
 
     public function createNew()
@@ -50,6 +60,42 @@ new class extends Component {
                 'type' => 'success',
                 'title' => 'Berhasil!',
                 'content' => 'Target tugas berhasil dihapus.',
+            ]);
+
+            $this->loadTask();
+        } catch (\Exception $e) {
+            $this->dispatch('show-alert', [
+                'type' => 'error',
+                'title' => 'Terjadi Kesalahan',
+                'content' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function createBudget()
+    {
+        $this->dispatch('open-budget-form', taskId: $this->taskId);
+    }
+
+    public function editBudget($budgetId)
+    {
+        $this->dispatch('open-budget-form', taskId: $this->taskId, budgetId: $budgetId);
+    }
+
+    public function deleteBudget($budgetId)
+    {
+        if (!$budgetId) {
+            return;
+        }
+
+        try {
+            $budget = \App\Models\BudgetRealization::findOrFail($budgetId);
+            $budget->delete();
+
+            $this->dispatch('show-alert', [
+                'type' => 'success',
+                'title' => 'Berhasil!',
+                'content' => 'Realisasi anggaran berhasil dihapus.',
             ]);
 
             $this->loadTask();
@@ -113,6 +159,120 @@ new class extends Component {
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Budget Realization -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 mb-4">
+                <h3 class="text-lg font-semibold">Realisasi Anggaran</h3>
+                <flux:button size="sm" wire:click="createBudget" variant="primary" icon="plus">
+                    Tambah Realisasi
+                </flux:button>
+            </div>
+
+            <!-- Budget Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <label class="text-xs font-medium text-blue-900">Anggaran Estimasi</label>
+                    <p class="mt-1 text-xl font-bold text-blue-900">
+                        Rp {{ number_format($task->estimated_budget ?? 0, 0, ',', '.') }}
+                    </p>
+                </div>
+                {{-- <div class="bg-green-50 rounded-lg p-4">
+                    <label class="text-xs font-medium text-green-900">Total Pemasukan</label>
+                    <p class="mt-1 text-xl font-bold text-green-900">
+                        Rp {{ number_format($totalIncome, 0, ',', '.') }}
+                    </p>
+                </div> --}}
+                <div class="bg-green-50 rounded-lg p-4">
+                    <label class="text-xs font-medium text-green-900">Total Realisasi</label>
+                    <p class="mt-1 text-xl font-bold text-green-900">
+                        Rp {{ number_format($totalExpense, 0, ',', '.') }}
+                    </p>
+                </div>
+                {{-- <div class="{{ $netBalance >= 0 ? 'bg-green-50' : 'bg-red-50' }} rounded-lg p-4">
+                    <label class="text-xs font-medium {{ $netBalance >= 0 ? 'text-green-900' : 'text-red-900' }}">
+                        Saldo Bersih
+                    </label>
+                    <p class="mt-1 text-xl font-bold {{ $netBalance >= 0 ? 'text-green-900' : 'text-red-900' }}">
+                        Rp {{ number_format($netBalance, 0, ',', '.') }}
+                    </p>
+                </div> --}}
+            </div>
+
+            <!-- Budget Realization List -->
+            @if (count($budgetRealizations) > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tanggal
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Kategori
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Deskripsi
+                                </th>
+                                {{-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tipe
+                                </th> --}}
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Jumlah
+                                </th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach ($budgetRealizations as $budget)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $budget->transaction_date?->format('d/m/Y') ?? '-' }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <flux:badge color="zinc" size="sm">
+                                            {{ $budget->category ?? '-' }}
+                                        </flux:badge>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {{ $budget->description ?? '-' }}
+                                    </td>
+                                    {{-- <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        @if ($budget->transaction_type === 'income')
+                                            <flux:badge color="green" size="sm">Pemasukan</flux:badge>
+                                        @else
+                                            <flux:badge color="red" size="sm">Pengeluaran</flux:badge>
+                                        @endif
+                                    </td> --}}
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-semibold {{ $budget->transaction_type === 'income' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ $budget->transaction_type === 'income' ? '+' : '-' }}
+                                        Rp {{ number_format($budget->amount, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
+                                        <div class="flex justify-center gap-2">
+                                            <flux:button icon="square-pen" size="xs"
+                                                wire:click="editBudget({{ $budget->id }})"
+                                                variant="ghost" />
+                                            <flux:button icon="trash" size="xs" variant="danger"
+                                                wire:click="deleteBudget({{ $budget->id }})"
+                                                wire:confirm="Apakah Anda yakin ingin menghapus realisasi anggaran ini?" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <flux:icon name="currency-dollar" class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                    <p class="text-sm text-gray-500">Belum ada realisasi anggaran yang ditambahkan.</p>
+                    <p class="text-xs text-gray-400 mt-1">Klik tombol "Tambah Realisasi" untuk memulai.</p>
+                </div>
+            @endif
         </div>
 
         <!-- Targets List -->
@@ -272,6 +432,9 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    <!-- Include Budget Form Modal -->
+    @livewire('project-task.budget-form')
 
     <!-- Include Target Form Modal -->
     @livewire('project-task.target-form')

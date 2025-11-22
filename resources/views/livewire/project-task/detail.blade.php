@@ -21,15 +21,7 @@ new class extends Component {
 
     public function loadTask()
     {
-        $this->task = Task::with([
-            'program',
-            'parentTask',
-            'subTasks',
-            'assignedUser',
-            'targets',
-            'budgetRealizations',
-            'attachments',
-        ])->findOrFail($this->taskId);
+        $this->task = Task::with(['program', 'parentTask', 'subTasks', 'assignedUser', 'targets', 'budgetRealizations', 'attachments'])->findOrFail($this->taskId);
     }
 
     public function closeModal()
@@ -75,7 +67,8 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:modal name="task-detail-modal" class="lg:min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal" wire:close="closeModal">
+    <flux:modal name="task-detail-modal" class="lg:min-w-[900px] max-h-[90vh] overflow-y-auto" wire:model.self="showModal"
+        wire:close="closeModal">
         <form wire:submit="closeModal">
             <div class="flex justify-between pr-8">
                 <flux:heading size="lg">Detail Tugas</flux:heading>
@@ -128,15 +121,20 @@ new class extends Component {
                                 <label class="text-sm font-medium text-gray-700">Status</label>
                                 <div class="mt-1">
                                     @if ($task->status === 'not_started')
-                                        <flux:badge color="gray">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="gray">{{ $this->getStatusLabel($task->status) }}
+                                        </flux:badge>
                                     @elseif ($task->status === 'in_progress')
-                                        <flux:badge color="blue">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="blue">{{ $this->getStatusLabel($task->status) }}
+                                        </flux:badge>
                                     @elseif ($task->status === 'completed')
-                                        <flux:badge color="green">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="green">{{ $this->getStatusLabel($task->status) }}
+                                        </flux:badge>
                                     @elseif ($task->status === 'on_hold')
-                                        <flux:badge color="yellow">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="yellow">{{ $this->getStatusLabel($task->status) }}
+                                        </flux:badge>
                                     @else
-                                        <flux:badge color="red">{{ $this->getStatusLabel($task->status) }}</flux:badge>
+                                        <flux:badge color="red">{{ $this->getStatusLabel($task->status) }}
+                                        </flux:badge>
                                     @endif
                                 </div>
                             </div>
@@ -144,11 +142,14 @@ new class extends Component {
                                 <label class="text-sm font-medium text-gray-700">Prioritas</label>
                                 <div class="mt-1">
                                     @if ($task->priority === 'high')
-                                        <flux:badge variant="solid" color="red">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="red">
+                                            {{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @elseif ($task->priority === 'medium')
-                                        <flux:badge variant="solid" color="yellow">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="yellow">
+                                            {{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @else
-                                        <flux:badge variant="solid" color="green">{{ $this->getPriorityLabel($task->priority) }}</flux:badge>
+                                        <flux:badge variant="solid" color="green">
+                                            {{ $this->getPriorityLabel($task->priority) }}</flux:badge>
                                     @endif
                                 </div>
                             </div>
@@ -177,10 +178,20 @@ new class extends Component {
                                     {{ $task->end_date?->format('d/m/Y') ?? '-' }}
                                 </p>
                             </div>
-                            <div class="col-span-2">
+                            <div>
                                 <label class="text-sm font-medium text-gray-700">Estimasi Anggaran</label>
                                 <p class="mt-1 text-sm text-gray-900">
                                     {{ $task->estimated_budget ? 'Rp ' . number_format($task->estimated_budget, 0, ',', '.') : '-' }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Total Realisasi</label>
+                                @php
+                                    $totalRealization = $task->budgetRealizations->sum('amount');
+                                @endphp
+                                <p
+                                    class="mt-1 text-sm font-semibold {{ $totalRealization > 0 ? 'text-green-600' : 'text-gray-900' }}">
+                                    {{ $totalRealization > 0 ? 'Rp ' . number_format($totalRealization, 0, ',', '.') : '-' }}
                                 </p>
                             </div>
                         </div>
@@ -253,9 +264,11 @@ new class extends Component {
                                                 <label class="text-xs font-medium text-gray-500">Progress</label>
                                                 <div class="flex items-center gap-2">
                                                     @php
-                                                        $progress = $target->target_value > 0
-                                                            ? ($target->achieved_value / $target->target_value) * 100
-                                                            : 0;
+                                                        $progress =
+                                                            $target->target_value > 0
+                                                                ? ($target->achieved_value / $target->target_value) *
+                                                                    100
+                                                                : 0;
                                                     @endphp
                                                     <div class="flex-1 bg-gray-200 rounded-full h-2">
                                                         <div class="h-2 rounded-full {{ $progress >= 100 ? 'bg-green-500' : ($progress >= 50 ? 'bg-blue-500' : 'bg-yellow-500') }}"
@@ -306,7 +319,7 @@ new class extends Component {
                                     <div class="p-2 bg-gray-50 rounded">
                                         <div class="flex justify-between items-center">
                                             <span class="text-sm text-gray-900">
-                                                {{ $realization->realization_date?->format('d/m/Y') }}
+                                                {{ $realization->transaction_date?->format('d/m/Y') }}
                                             </span>
                                             <span class="text-sm font-medium text-gray-900">
                                                 Rp {{ number_format($realization->amount, 0, ',', '.') }}
@@ -321,7 +334,8 @@ new class extends Component {
                                     <div class="flex justify-between items-center">
                                         <span class="text-sm font-semibold text-gray-900">Total Realisasi</span>
                                         <span class="text-sm font-semibold text-gray-900">
-                                            Rp {{ number_format($task->budgetRealizations->sum('amount'), 0, ',', '.') }}
+                                            Rp
+                                            {{ number_format($task->budgetRealizations->sum('amount'), 0, ',', '.') }}
                                         </span>
                                     </div>
                                 </div>
@@ -339,9 +353,11 @@ new class extends Component {
                                         <div class="flex items-center space-x-2">
                                             <flux:icon name="paperclip" class="w-4 h-4 text-gray-400" />
                                             <div>
-                                                <span class="text-sm text-gray-900">{{ $attachment->file_name }}</span>
+                                                <span
+                                                    class="text-sm text-gray-900">{{ $attachment->file_name }}</span>
                                                 @if ($attachment->description)
-                                                    <p class="text-xs text-gray-500">{{ $attachment->description }}</p>
+                                                    <p class="text-xs text-gray-500">{{ $attachment->description }}
+                                                    </p>
                                                 @endif
                                             </div>
                                         </div>

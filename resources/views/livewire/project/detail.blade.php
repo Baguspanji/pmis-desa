@@ -25,6 +25,7 @@ new class extends Component {
             'tasks' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             },
+            'tasks.budgetRealizations',
             'taskTargets',
             'attachments' => function ($query) {
                 $query->orderBy('created_at', 'desc');
@@ -142,10 +143,21 @@ new class extends Component {
                                     {{ $project->end_date?->format('d/m/Y') ?? '-' }}
                                 </p>
                             </div>
-                            <div class="col-span-2">
+                            <div>
                                 <label class="text-sm font-medium text-gray-700">Total Anggaran</label>
                                 <p class="mt-1 text-sm text-gray-900">
                                     {{ $project->total_budget ? 'Rp ' . number_format($project->total_budget, 0, ',', '.') : '-' }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Total Realisasi</label>
+                                @php
+                                    $totalRealization = $project->tasks->flatMap(function($task) {
+                                        return $task->budgetRealizations ?? collect();
+                                    })->sum('amount');
+                                @endphp
+                                <p class="mt-1 text-sm font-semibold {{ $totalRealization > 0 ? 'text-green-600' : 'text-gray-900' }}">
+                                    {{ $totalRealization > 0 ? 'Rp ' . number_format($totalRealization, 0, ',', '.') : 'Rp 0' }}
                                 </p>
                             </div>
                         </div>
