@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -11,7 +12,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'email'    => 'required|string',
+            'email' => 'required|string',
             'password' => 'required|string|min:6',
         ]);
 
@@ -32,14 +33,14 @@ class AuthController extends Controller
         ];
 
         // Attempt to authenticate the user
-        if (!Auth::attempt($fields)) {
+        if (! Auth::attempt($fields)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
             ], 401);
         }
 
-        $user = User::where('id', Auth::id())->first();
+        $user = User::where('id', Auth::id())->where('role', 'kepala_desa')->first();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
