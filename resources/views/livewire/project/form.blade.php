@@ -112,7 +112,7 @@ new class extends Component {
                     'location' => $validated['location'] ?? null,
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
-                    'pic_user_id' => $validated['pic_user_id'] ?? null,
+                    'pic_user_id' => $validated['pic_user_id'] != '' ? $validated['pic_user_id'] : null,
                     'total_budget' => $validated['total_budget'] ?? null,
                     'status' => $validated['status'],
                 ];
@@ -131,7 +131,7 @@ new class extends Component {
                     'location' => $validated['location'] ?? null,
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
-                    'pic_user_id' => $validated['pic_user_id'] ?? null,
+                    'pic_user_id' => $validated['pic_user_id'] != '' ? $validated['pic_user_id'] : null,
                     'total_budget' => $validated['total_budget'] ?? null,
                     'status' => $validated['status'],
                     'created_by' => auth()->id(),
