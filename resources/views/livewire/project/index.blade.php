@@ -4,8 +4,9 @@ use Livewire\Volt\Component;
 use App\Models\Program;
 use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new #[Title('Program')] class extends Component {
     #[Url('q')]
     public $search = '';
     #[Url('status')]

@@ -39,15 +39,11 @@ new class extends Component {
             $months[] = $monthName . ' ' . substr($year, 2);
 
             // Count programs created in this month
-            $programCount = Program::whereYear('start_date', $date->year)
-                ->whereMonth('start_date', $date->month)
-                ->count();
+            $programCount = Program::whereYear('start_date', $date->year)->whereMonth('start_date', $date->month)->count();
             $programData[] = $programCount;
 
             // Count tasks created in this month
-            $taskCount = Task::whereYear('start_date', $date->year)
-                ->whereMonth('start_date', $date->month)
-                ->count();
+            $taskCount = Task::whereYear('start_date', $date->year)->whereMonth('start_date', $date->month)->count();
             $taskData[] = $taskCount;
         }
 
@@ -63,7 +59,11 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl pt-12">
+    <!-- Header Page -->
+    <x-app-header-page title="Dashboard" description="Ikhtisar statistik dan data utama" :breadcrumbs="[['label' => 'Dashboard']]" />
+
+    <!-- Main Content -->
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl mt-6">
         <div class="grid auto-rows-min gap-4 md:grid-cols-4">
             {{-- Total Pengguna --}}
             <div
@@ -154,164 +154,164 @@ new class extends Component {
 </div>
 
 @assets
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 @endassets
 
 @script
-<script>
-    const chartData = @js($chartData);
-    const isDarkMode = document.documentElement.classList.contains('dark');
+    <script>
+        const chartData = @js($chartData);
+        const isDarkMode = document.documentElement.classList.contains('dark');
 
-    const options = {
-        series: [{
-            name: 'Program',
-            data: chartData.programs
-        }, {
-            name: 'Tugas',
-            data: chartData.tasks
-        }],
-        chart: {
-            type: 'bar',
-            height: 350,
-            toolbar: {
-                show: false
+        const options = {
+            series: [{
+                name: 'Program',
+                data: chartData.programs
+            }, {
+                name: 'Tugas',
+                data: chartData.tasks
+            }],
+            chart: {
+                type: 'bar',
+                height: 350,
+                toolbar: {
+                    show: false
+                },
+                background: 'transparent',
+                fontFamily: 'inherit',
             },
-            background: 'transparent',
-            fontFamily: 'inherit',
-        },
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                columnWidth: '60%',
-                borderRadius: 6,
-                dataLabels: {
-                    position: 'top',
-                }
-            },
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            show: true,
-            width: 2,
-            colors: ['transparent']
-        },
-        xaxis: {
-            categories: chartData.labels,
-            labels: {
-                style: {
-                    colors: isDarkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '12px'
-                }
-            },
-            axisBorder: {
-                color: isDarkMode ? '#374151' : '#e5e7eb'
-            },
-            axisTicks: {
-                color: isDarkMode ? '#374151' : '#e5e7eb'
-            }
-        },
-        yaxis: {
-            title: {
-                text: 'Jumlah',
-                style: {
-                    color: isDarkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '12px',
-                    fontWeight: 500
-                }
-            },
-            labels: {
-                style: {
-                    colors: isDarkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '12px'
-                }
-            }
-        },
-        fill: {
-            opacity: 1
-        },
-        tooltip: {
-            theme: isDarkMode ? 'dark' : 'light',
-            y: {
-                formatter: function (val) {
-                    return val + " item"
-                }
-            }
-        },
-        colors: ['#22c55e', '#3b82f6'],
-        legend: {
-            show: true,
-            position: 'top',
-            horizontalAlign: 'right',
-            labels: {
-                colors: isDarkMode ? '#d1d5db' : '#374151'
-            },
-            markers: {
-                width: 12,
-                height: 12,
-                radius: 3
-            }
-        },
-        grid: {
-            borderColor: isDarkMode ? '#374151' : '#e5e7eb',
-            strokeDashArray: 4,
-        }
-    };
-
-    const chart = new ApexCharts(document.querySelector("#programTaskChart"), options);
-    chart.render();
-
-    // Listen for theme changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class') {
-                const isDark = document.documentElement.classList.contains('dark');
-                chart.updateOptions({
-                    xaxis: {
-                        labels: {
-                            style: {
-                                colors: isDark ? '#9ca3af' : '#6b7280'
-                            }
-                        },
-                        axisBorder: {
-                            color: isDark ? '#374151' : '#e5e7eb'
-                        },
-                        axisTicks: {
-                            color: isDark ? '#374151' : '#e5e7eb'
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            style: {
-                                color: isDark ? '#9ca3af' : '#6b7280'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                colors: isDark ? '#9ca3af' : '#6b7280'
-                            }
-                        }
-                    },
-                    legend: {
-                        labels: {
-                            colors: isDark ? '#d1d5db' : '#374151'
-                        }
-                    },
-                    grid: {
-                        borderColor: isDark ? '#374151' : '#e5e7eb'
-                    },
-                    tooltip: {
-                        theme: isDark ? 'dark' : 'light'
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '60%',
+                    borderRadius: 6,
+                    dataLabels: {
+                        position: 'top',
                     }
-                });
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: chartData.labels,
+                labels: {
+                    style: {
+                        colors: isDarkMode ? '#9ca3af' : '#6b7280',
+                        fontSize: '12px'
+                    }
+                },
+                axisBorder: {
+                    color: isDarkMode ? '#374151' : '#e5e7eb'
+                },
+                axisTicks: {
+                    color: isDarkMode ? '#374151' : '#e5e7eb'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Jumlah',
+                    style: {
+                        color: isDarkMode ? '#9ca3af' : '#6b7280',
+                        fontSize: '12px',
+                        fontWeight: 500
+                    }
+                },
+                labels: {
+                    style: {
+                        colors: isDarkMode ? '#9ca3af' : '#6b7280',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                theme: isDarkMode ? 'dark' : 'light',
+                y: {
+                    formatter: function(val) {
+                        return val + " item"
+                    }
+                }
+            },
+            colors: ['#22c55e', '#3b82f6'],
+            legend: {
+                show: true,
+                position: 'top',
+                horizontalAlign: 'right',
+                labels: {
+                    colors: isDarkMode ? '#d1d5db' : '#374151'
+                },
+                markers: {
+                    width: 12,
+                    height: 12,
+                    radius: 3
+                }
+            },
+            grid: {
+                borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                strokeDashArray: 4,
             }
-        });
-    });
+        };
 
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-</script>
+        const chart = new ApexCharts(document.querySelector("#programTaskChart"), options);
+        chart.render();
+
+        // Listen for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    chart.updateOptions({
+                        xaxis: {
+                            labels: {
+                                style: {
+                                    colors: isDark ? '#9ca3af' : '#6b7280'
+                                }
+                            },
+                            axisBorder: {
+                                color: isDark ? '#374151' : '#e5e7eb'
+                            },
+                            axisTicks: {
+                                color: isDark ? '#374151' : '#e5e7eb'
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                style: {
+                                    color: isDark ? '#9ca3af' : '#6b7280'
+                                }
+                            },
+                            labels: {
+                                style: {
+                                    colors: isDark ? '#9ca3af' : '#6b7280'
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                colors: isDark ? '#d1d5db' : '#374151'
+                            }
+                        },
+                        grid: {
+                            borderColor: isDark ? '#374151' : '#e5e7eb'
+                        },
+                        tooltip: {
+                            theme: isDark ? 'dark' : 'light'
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    </script>
 @endscript

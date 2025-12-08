@@ -26,11 +26,13 @@ class Resident extends Model
         'education',
         'phone',
         'is_active',
+        'is_head',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
         'is_active' => 'boolean',
+        'is_head' => 'boolean',
     ];
 
     /**

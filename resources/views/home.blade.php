@@ -13,9 +13,12 @@
         <!-- Header with Transparent Background -->
         <header class="bg-transparent py-4 w-full z-50">
             <div class="max-w-7xl mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('assets/logo-pemerintah-mandiri.png') }}" alt="logo-pemerintah-mandiri"
-                        class="h-14">
+                <div class="flex items-center gap-2">
+                    <img src="{{ asset('logo_paskab.png') }}" alt="logo-pemerintah-mandiri" class="h-14">
+                    <div class="flex flex-col">
+                        <span class="text-xl font-semibold leading-5">Desa Kertosari</span>
+                        <span class="text-sm">Kabupaten Pasuruan</span>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3">
                     <input type="text"
@@ -36,9 +39,9 @@
         <!-- Hero Content -->
         <div class="flex-1 flex items-center justify-center text-center">
             <div class="max-w-4xl px-5">
-                <h2 class="text-2xl md:text-3xl font-normal mb-3">Selamat Datang</h2>
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-5 capitalize">MABES Kertosari</h1>
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-semibold mb-5">Manegemen APBDesa Kertosari</h3>
+                <h2 class="text-2xl md:text-3xl font-normal mb-3">Selamat Datang di</h2>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 capitalize">Website Resmi Desa Kertosari</h1>
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-semibold mb-5">Manajemen APBDesa Kertosari</h3>
                 <p class="text-base md:text-lg leading-tight mb-8 max-w-3xl mx-auto">
                     Desa Kertosari secara resmi ditetapkan sebagai Desa Wisata Kertosari melalui Keputusan Bupati
                     Pasuruan pada tahun 2019. Visi kami adalah menjadi kawasan wisata pedesaan yang menjadi percontohan
@@ -139,7 +142,8 @@
                         <p class="text-base leading-tight text-white/90 mb-3">
                             Menyimpan dan mengelola data penerima bantuan sosial
                         </p>
-                        <span class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        <span
+                            class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                             Coming Soon
                         </span>
                     </div>
@@ -167,7 +171,8 @@
                         <p class="text-base leading-tight mb-3">
                             Website profil untuk meningkatkan potensi wisata desa
                         </p>
-                        <span class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-white/50">
+                        <span
+                            class="absolute -top-2 right-0 bg-[#FDB913] text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-white/50">
                             Coming Soon
                         </span>
                     </div>
@@ -244,22 +249,28 @@
                                 Realisasi Pembuatan dan Penempatan Sarana Air Bersih
                             </h3>
                             <p class="text-sm leading-tight mb-4">
-                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci utama peningkatan kualitas hidup.
+                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci
+                                utama peningkatan kualitas hidup.
                             </p>
                             <div class="flex items-center gap-2 mb-2">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">Rp 200.000.000</span>
                             </div>
                             <div class="flex items-center gap-2 mb-4">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" fill="currentColor"/>
+                                    <path
+                                        d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">2025</span>
                             </div>
                         </div>
-                        <button class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
+                        <button
+                            class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
                             Direncanakan
                         </button>
                     </div>
@@ -271,22 +282,28 @@
                                 Pembangunan Gudang real estate BUMDES
                             </h3>
                             <p class="text-sm leading-tight mb-4">
-                                Penguatan Badan Usaha Milik Desa sebagai mesin ekonomi desa (misalnya, unit usaha wisata, unit usaha pengolahan sampah, unit usaha penyewaan alat pertanian).
+                                Penguatan Badan Usaha Milik Desa sebagai mesin ekonomi desa (misalnya, unit usaha
+                                wisata, unit usaha pengolahan sampah, unit usaha penyewaan alat pertanian).
                             </p>
                             <div class="flex items-center gap-2 mb-2">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">Rp 200.000.000</span>
                             </div>
                             <div class="flex items-center gap-2 mb-4">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" fill="currentColor"/>
+                                    <path
+                                        d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">2025</span>
                             </div>
                         </div>
-                        <button class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
+                        <button
+                            class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
                             Direncanakan
                         </button>
                     </div>
@@ -298,22 +315,29 @@
                                 Realisasi Pembuatan dan Penempatan Sarana Air Bersih
                             </h3>
                             <p class="text-sm leading-tight mb-4">
-                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci utama peningkatan kualitas hidup. Di wilayah sasaran program ini, masyarakat masih menghadapi kendala signifikan
+                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci
+                                utama peningkatan kualitas hidup. Di wilayah sasaran program ini, masyarakat masih
+                                menghadapi kendala signifikan
                             </p>
                             <div class="flex items-center gap-2 mb-2">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">Rp 200.000.000</span>
                             </div>
                             <div class="flex items-center gap-2 mb-4">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" fill="currentColor"/>
+                                    <path
+                                        d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">2025</span>
                             </div>
                         </div>
-                        <button class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
+                        <button
+                            class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
                             Direncanakan
                         </button>
                     </div>
@@ -325,22 +349,29 @@
                                 Realisasi Pembuatan dan Penempatan Sarana Air Bersih
                             </h3>
                             <p class="text-sm leading-tight mb-4">
-                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci utama peningkatan kualitas hidup. Di wilayah sasaran program ini, masyarakat masih menghadapi kendala signifikan
+                                Akses terhadap air bersih dan sanitasi yang layak adalah hak dasar manusia dan kunci
+                                utama peningkatan kualitas hidup. Di wilayah sasaran program ini, masyarakat masih
+                                menghadapi kendala signifikan
                             </p>
                             <div class="flex items-center gap-2 mb-2">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">Rp 200.000.000</span>
                             </div>
                             <div class="flex items-center gap-2 mb-4">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" fill="currentColor"/>
+                                    <path
+                                        d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
+                                        fill="currentColor" />
                                 </svg>
                                 <span class="text-sm font-semibold">2025</span>
                             </div>
                         </div>
-                        <button class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
+                        <button
+                            class="bg-[#FDB913] hover:bg-yellow-500 text-gray-800 px-6 py-2 rounded-2xl text-sm font-semibold transition w-full">
                             Direncanakan
                         </button>
                     </div>
@@ -417,11 +448,11 @@
 
                 <div class="px-2">
                     <p class="text-sm font-semibold leading-tight text-gray-600">Jl. Sekolahan, Kademarangan Kidul,</p>
-                    <p class="text-sm font-semibold leading-tight text-gray-600">Purwosari, Kec. Purwodadi, Pasuruan, Jawa</p>
+                    <p class="text-sm font-semibold leading-tight text-gray-600">Purwosari, Kec. Purwodadi, Pasuruan,
+                        Jawa</p>
                     <p class="text-sm font-semibold leading-tight text-gray-600">Timur 67162</p>
                     <div class="flex items-center gap-2 mt-2">
-                        <svg class="w-6 h-6" viewBox="0 0 29 29" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-6 h-6" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M10.5984 4.04143C9.9251 3.08312 8.99286 2.65129 8.00413 2.66194C7.06601 2.6714 6.1526 3.07484 5.38986 3.61196C4.61189 4.16248 3.94853 4.8606 3.43711 5.66701C2.95452 6.43484 2.6061 7.34227 2.65319 8.22841C2.88036 12.4911 5.26627 17.046 8.61738 20.4167C11.9661 23.7838 16.4378 26.124 20.953 25.6768C21.8382 25.5892 22.6751 25.1361 23.359 24.5587C24.0663 23.9565 24.6442 23.2158 25.0575 22.3818C25.4577 21.5631 25.6966 20.619 25.5648 19.6997C25.4282 18.7414 24.895 17.8849 23.9145 17.317C23.7114 17.1985 23.5105 17.0762 23.3119 16.9502C23.1353 16.8402 22.947 16.7207 22.7186 16.5835C22.2522 16.2944 21.76 16.0496 21.2485 15.8523C20.7223 15.6595 20.1208 15.5329 19.4946 15.6192C18.8461 15.7091 18.2434 16.0168 17.722 16.5681C17.3206 16.994 16.7297 17.1265 15.8987 16.8851C15.0536 16.6391 14.1025 16.0286 13.2762 15.2028C12.4499 14.3793 11.8249 13.4163 11.5577 12.5467C11.294 11.6854 11.4106 11.0525 11.8225 10.6159C12.3793 10.0267 12.6759 9.37129 12.7383 8.67799C12.7995 8.00362 12.6324 7.36948 12.3934 6.81579C12.0356 5.98881 11.4282 5.16655 10.9527 4.52532C10.8331 4.365 10.7154 4.2033 10.5996 4.04025"
                                 fill="#0A4194" />
@@ -436,11 +467,7 @@
                 <div class="w-80 h-44 rounded-lg overflow-hidden shadow-lg">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15812.023107631881!2d112.753263!3d-7.78921105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7d3a8f9cc3f3f%3A0x74849944d1e7755a!2sKertosari%2C%20Kec.%20Purwosari%2C%20Pasuruan%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1763633763310!5m2!1sid!2sid"
-                        width="100%"
-                        height="100%"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>

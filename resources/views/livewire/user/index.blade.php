@@ -2,8 +2,9 @@
 
 use Livewire\Volt\Component;
 use App\Models\User;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new #[Title('Pengguna')] class extends Component {
     public $search = '';
     public $roleFilter = '';
 

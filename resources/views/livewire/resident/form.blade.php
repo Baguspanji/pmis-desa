@@ -23,6 +23,7 @@ new class extends Component {
     public $education = '';
     public $phone = '';
     public $is_active = true;
+    public $is_head = false;
 
     public $isEdit = false;
     public $showModal = false;
@@ -80,6 +81,7 @@ new class extends Component {
         $this->education = $resident->education ?? '';
         $this->phone = $resident->phone ?? '';
         $this->is_active = $resident->is_active;
+        $this->is_head = $resident->is_head;
     }
 
     public function closeModal()
@@ -113,6 +115,7 @@ new class extends Component {
         $this->education = '';
         $this->phone = '';
         $this->is_active = true;
+        $this->is_head = false;
         $this->resetValidation();
     }
 
@@ -135,6 +138,7 @@ new class extends Component {
             'education' => ['nullable', 'string', 'max:50'],
             'phone' => ['nullable', 'string', 'max:20'],
             'is_active' => ['boolean'],
+            'is_head' => ['boolean'],
         ];
 
         $validated = $this->validate($rules);
@@ -160,6 +164,7 @@ new class extends Component {
                     'education' => $validated['education'] ?? null,
                     'phone' => $validated['phone'] ?? null,
                     'is_active' => $this->is_active,
+                    'is_head' => $this->is_head,
                 ]);
 
                 $this->dispatch('show-alert', [
@@ -185,6 +190,7 @@ new class extends Component {
                     'education' => $validated['education'] ?? null,
                     'phone' => $validated['phone'] ?? null,
                     'is_active' => $this->is_active,
+                    'is_head' => $this->is_head,
                 ]);
 
                 $this->dispatch('show-alert', [
@@ -238,6 +244,14 @@ new class extends Component {
                             @enderror
                         </flux:field>
                     </div>
+                </div>
+
+                <!-- Is Head -->
+                <div class="flex flex-row justify-between">
+                    <flux:checkbox wire:model="is_head" label="Kepala Keluarga" />
+                    <flux:description>
+                        (Tandai jika warga ini adalah kepala keluarga)
+                    </flux:description>
                 </div>
 
                 <!-- Full Name -->

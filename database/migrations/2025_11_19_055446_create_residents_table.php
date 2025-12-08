@@ -28,8 +28,11 @@ return new class extends Migration
             $table->string('occupation')->nullable();
             $table->string('education', 50)->nullable();
             $table->string('phone', 20)->nullable();
+            $table->boolean('is_head')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->index('kk_number');
         });
     }
 
