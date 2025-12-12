@@ -1,6 +1,6 @@
 <!-- Hero Section with Header -->
 <section class="h-sm flex flex-col text-white bg-linear-to-r from-black/40 to-black/40 rounded-b-3xl"
-    style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/landing-page.png'); background-size: cover; background-position: center;">
+    style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page.png') }}); background-size: cover; background-position: center;">
 
     <!-- Header with Transparent Background -->
     <header class="bg-transparent py-4 w-full z-50">

@@ -5,15 +5,10 @@ use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\TaskReportController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-Route::get('/profil-desa', function () {
-    return view('profile');
-})->name('profile');
-Route::get('/berita-acara', function () {
-    return view('news');
-})->name('news');
+Route::get('/', fn () => view('home'))->name('home');
+Route::get('/profil-desa', fn () => view('profile'))->name('profile');
+Route::get('/berita-acara', fn () => view('news'))->name('news');
+Route::get('/berita-desa/{slug}', fn ($slug) => view('news-detail', ['slug' => $slug]))->name('news.detail');
 
 Route::get('/terms-conditions', function () {
     return view('terms-conditions');
