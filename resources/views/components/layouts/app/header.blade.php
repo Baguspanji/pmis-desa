@@ -137,42 +137,66 @@
 
         <flux:navlist variant="outline">
             <flux:navlist.group>
-                <!-- Dashboard -->
-                <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')"
-                    class="text-white/80! {{ request()->routeIs('dashboard')
-                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                        : '' }}"
-                    wire:navigate>
-                    {{ __('Dashboard') }}
-                </flux:navlist.item>
-                <!-- Project Management -->
-                <flux:navlist.item icon="folder" :href="route('projects')"
-                    :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
-                    class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
-                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                        : '' }}"
-                    wire:navigate>
-                    {{ __('Program') }}
-                </flux:navlist.item>
-                <!-- User Management -->
-                <flux:navlist.item icon="users" :href="route('users')"
-                    :current="request()->routeIs('users') || request()->routeIs('users.*')"
-                    class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
-                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                        : '' }}"
-                    wire:navigate>
-                    {{ __('Pengguna') }}
-                </flux:navlist.item>
-                <!-- Resident Management -->
-                <flux:navlist.item icon="user-group" :href="route('residents')"
-                    :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
-                    class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
-                        ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
-                        : '' }}"
-                    wire:navigate>
-                    {{ __('Warga') }}
-                </flux:navlist.item>
+                @canany(['admin', 'operator', 'kepala_desa', 'staff', 'kasun'])
+                    <!-- Dashboard -->
+                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
+                        :current="request()->routeIs('dashboard')"
+                        class="text-white/80! {{ request()->routeIs('dashboard')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                    <!-- Project Management -->
+                    <flux:navlist.item icon="folder" :href="route('projects')"
+                        :current="request()->routeIs('projects') || request()->routeIs('projects.*')"
+                        class="text-white/80! {{ request()->routeIs('projects') || request()->routeIs('projects.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Program') }}
+                    </flux:navlist.item>
+                @endcanany
+                @canany(['admin', 'operator'])
+                    <!-- User Management -->
+                    <flux:navlist.item icon="users" :href="route('users')"
+                        :current="request()->routeIs('users') || request()->routeIs('users.*')"
+                        class="text-white/80! {{ request()->routeIs('users') || request()->routeIs('users.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Pengguna') }}
+                    </flux:navlist.item>
+                    <!-- News Management -->
+                    <flux:navlist.item icon="newspaper" :href="route('news.manage')"
+                        :current="request()->routeIs('news.manage') || request()->routeIs('news.manage.*')"
+                        class="text-white/80! {{ request()->routeIs('news.manage') || request()->routeIs('news.manage.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Berita Acara') }}
+                    </flux:navlist.item>
+                    <!-- Pengaduan Management -->
+                    <flux:navlist.item icon="chat-bubble-oval-left-ellipsis" :href="route('complaints')"
+                        :current="request()->routeIs('complaints') || request()->routeIs('complaints.*')"
+                        class="text-white/80! {{ request()->routeIs('complaints') || request()->routeIs('complaints.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Pengaduan') }}
+                    </flux:navlist.item>
+                @endcanany
+                @canany(['admin', 'operator', 'kepala_desa', 'kasun'])
+                    <!-- Resident Management -->
+                    <flux:navlist.item icon="user-group" :href="route('residents')"
+                        :current="request()->routeIs('residents') || request()->routeIs('residents.*')"
+                        class="text-white/80! {{ request()->routeIs('residents') || request()->routeIs('residents.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Warga') }}
+                    </flux:navlist.item>
+                @endcanany
             </flux:navlist.group>
         </flux:navlist>
     </flux:sidebar>
