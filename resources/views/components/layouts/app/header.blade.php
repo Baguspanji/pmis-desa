@@ -45,8 +45,31 @@
                     wire:navigate>
                     {{ __('Pengguna') }}
                 </flux:navbar.item>
+                <!-- Manage Dropdown -->
+                <flux:dropdown position="bottom" align="start">
+                    <flux:navbar.item icon="ellipsis-horizontal-circle" class="text-white/80!">
+                        {{ __('Manage') }}
+                    </flux:navbar.item>
+
+                    <flux:menu>
+                        <!-- News Management -->
+                        <flux:menu.item icon="newspaper" :href="route('news.manage')" wire:navigate>
+                            {{ __('Berita Acara') }}
+                        </flux:menu.item>
+
+                        <!-- Pengaduan Management -->
+                        <flux:menu.item icon="chat-bubble-oval-left-ellipsis" :href="route('complaints')" wire:navigate>
+                            {{ __('Pengaduan') }}
+                        </flux:menu.item>
+
+                        <!-- Resident Management -->
+                        <flux:menu.item icon="user-group" :href="route('residents')" wire:navigate>
+                            {{ __('Warga') }}
+                        </flux:menu.item>
+                    </flux:menu>
+                </flux:dropdown>
             @endcanany
-            @canany(['admin', 'operator', 'kepala_desa', 'kasun'])
+            @canany(['kepala_desa', 'kasun'])
                 <!-- Resident Management -->
                 <flux:navbar.item icon="user-group" :href="route('residents')"
                     :current="request()->routeIs('residents') || request()->routeIs('residents.*')"

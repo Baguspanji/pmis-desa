@@ -38,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('projects/{id}/tasks', 'project-task.index')->name('projects.tasks');
     Volt::route('projects/{id}/tasks/{taskId}/targets', 'project-task.target')->name('projects.tasks.targets');
 
+    Volt::route('news-manage', 'news.index')->name('news.manage');
+    Volt::route('complaints', 'complaint.index')->name('complaints');
+
     // PDF Report Routes
     Route::get('tasks/{taskId}/report/pdf', [TaskReportController::class, 'generateTaskReport'])
         ->name('tasks.report.pdf');
