@@ -8,6 +8,12 @@ use App\Http\Controllers\TaskReportController;
 Route::get('/', function () {
     return view('home');
 })->name('home');
+Route::get('/profil-desa', function () {
+    return view('profile');
+})->name('profile');
+Route::get('/berita-acara', function () {
+    return view('news');
+})->name('news');
 
 Route::get('/terms-conditions', function () {
     return view('terms-conditions');
