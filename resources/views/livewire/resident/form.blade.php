@@ -126,7 +126,7 @@ new class extends Component {
             'kk_number' => ['nullable', 'string', 'size:16'],
             'full_name' => ['required', 'string', 'max:255'],
             'birth_place' => ['nullable', 'string', 'max:255'],
-            'birth_date' => ['nullable', 'date'],
+            'birth_date' => ['required', 'date'],
             'gender' => ['required', 'in:male,female'],
             'address' => ['nullable', 'string'],
             'rt' => ['nullable', 'string', 'max:10'],
@@ -279,7 +279,7 @@ new class extends Component {
                     </div>
                     <div>
                         <flux:field>
-                            <flux:label>Tanggal Lahir</flux:label>
+                            <flux:label>Tanggal Lahir <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="birth_date" type="date" />
                             @error('birth_date')
                                 <flux:error>{{ $message }}</flux:error>

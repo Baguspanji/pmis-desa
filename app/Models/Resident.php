@@ -56,7 +56,7 @@ class Resident extends Model
             return '-';
         }
 
-        return $this->birth_date->format('d/m/Y');
+        return $this->birth_date->format('d-m-Y');
     }
 
     /**

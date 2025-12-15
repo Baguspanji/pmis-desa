@@ -299,7 +299,7 @@ new #[Title('Warga')] class extends Component {
                         <x-table.cell>
                             <div class="flex flex-col">
                                 <span class="text-sm">{{ $resident->birth_place ?? '-' }}</span>
-                                <span class="text-sm text-gray-500">{{ $resident->formatted_birth_date }}</span>
+                                <span class="text-sm text-gray-500">{{ $resident->formatted_birth_date }} ({{ $resident->age }} Tahun)</span>
                             </div>
                         </x-table.cell>
                         <x-table.cell>
