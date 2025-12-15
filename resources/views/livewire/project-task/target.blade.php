@@ -139,7 +139,7 @@ new class extends Component {
                     <p class="mt-1 text-sm text-gray-900">{{ $task->program?->program_name ?? '-' }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium text-gray-700">PIC</label>
+                    <label class="text-sm font-medium text-gray-700">Pelaksanan Kegiatan (PK)</label>
                     <p class="mt-1 text-sm text-gray-900">{{ $task->assignedUser?->full_name ?? '-' }}</p>
                 </div>
                 <div>

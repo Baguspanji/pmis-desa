@@ -92,7 +92,7 @@ new class extends Component {
                                     </p>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium text-gray-700">PIC</label>
+                                    <label class="text-sm font-medium text-gray-700">PK</label>
                                     <p class="mt-1 text-sm text-gray-900">
                                         {{ $project->pic?->full_name ?? '-' }}
                                     </p>

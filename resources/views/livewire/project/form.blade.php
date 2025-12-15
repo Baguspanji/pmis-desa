@@ -224,9 +224,9 @@ new class extends Component {
                 <!-- PIC -->
                 <div>
                     <flux:field>
-                        <flux:label>Penanggung Jawab (PIC)</flux:label>
+                        <flux:label>Pelaksanan Kegiatan (PK)</flux:label>
                         <flux:select wire:model="pic_user_id" placeholder="Pilih penanggung jawab">
-                            <option value="">-- Pilih PIC --</option>
+                            <option value="">-- Pilih PK --</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user['id'] }}">{{ $user['full_name'] }}</option>
                             @endforeach
