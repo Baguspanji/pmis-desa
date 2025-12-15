@@ -7,5 +7,7 @@
 
     @include('home.visi-misi')
 
+    @livewire('suggestion-page-component')
+
     @include('home.footer')
 @endsection

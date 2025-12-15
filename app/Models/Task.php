@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +23,8 @@ class Task extends Model
     ];
 
     protected $casts = [
-        'start_date'       => 'date',
-        'end_date'         => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
         'estimated_budget' => 'decimal:2',
     ];
 

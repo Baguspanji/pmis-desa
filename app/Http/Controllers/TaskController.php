@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Task;
@@ -10,9 +11,10 @@ use Illuminate\Support\Facades\Validator;
 class TaskController extends Controller
 {
     protected $taskService;
+
     public function __construct()
     {
-        $this->taskService = new TaskService();
+        $this->taskService = new TaskService;
     }
 
     public function getTasks()
@@ -25,8 +27,8 @@ class TaskController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('tasks.taks_name', 'like', '%' . $search . '%')
-                    ->orWhere('programs.program_name', 'like', '%' . $search . '%');
+                $q->where('tasks.taks_name', 'like', '%'.$search.'%')
+                    ->orWhere('programs.program_name', 'like', '%'.$search.'%');
             });
         }
 

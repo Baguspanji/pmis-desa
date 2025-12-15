@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 
 class TaskReportController extends Controller
 {
@@ -23,7 +22,7 @@ class TaskReportController extends Controller
             'attachments.uploader',
             'logbooks.creator',
             'logbooks.verifier',
-            'logbooks.taskTarget'
+            'logbooks.taskTarget',
         ])->findOrFail($taskId);
 
         // Calculate statistics
@@ -47,13 +46,13 @@ class TaskReportController extends Controller
             'progressPercentage' => $progressPercentage,
             'totalLogbooks' => $totalLogbooks,
             'verifiedLogbooks' => $verifiedLogbooks,
-            'generatedDate' => now()->format('d F Y H:i:s')
+            'generatedDate' => now()->format('d F Y H:i:s'),
         ];
 
         $pdf = Pdf::loadView('reports.task-report', $data);
         $pdf->setPaper('a4', 'portrait');
 
-        $filename = 'Laporan_Task_' . $task->id . '_' . now()->format('YmdHis') . '.pdf';
+        $filename = 'Laporan_Task_'.$task->id.'_'.now()->format('YmdHis').'.pdf';
 
         return $pdf->download($filename);
     }
@@ -68,10 +67,10 @@ class TaskReportController extends Controller
             'assignedUser',
             'targets',
             'budgetRealizations',
-            'logbooks'
+            'logbooks',
         ])->where('program_id', $programId)
-          ->whereNull('parent_task_id')
-          ->get();
+            ->whereNull('parent_task_id')
+            ->get();
 
         if ($tasks->isEmpty()) {
             return back()->with('error', 'Tidak ada task yang ditemukan untuk program ini.');
@@ -96,13 +95,13 @@ class TaskReportController extends Controller
             'completedTasks' => $completedTasks,
             'totalBudget' => $totalBudget,
             'totalRealization' => $totalRealization,
-            'generatedDate' => now()->format('d F Y H:i:s')
+            'generatedDate' => now()->format('d F Y H:i:s'),
         ];
 
         $pdf = Pdf::loadView('reports.program-tasks-report', $data);
         $pdf->setPaper('a4', 'portrait');
 
-        $filename = 'Laporan_Program_' . $program->id . '_' . now()->format('YmdHis') . '.pdf';
+        $filename = 'Laporan_Program_'.$program->id.'_'.now()->format('YmdHis').'.pdf';
 
         return $pdf->download($filename);
     }

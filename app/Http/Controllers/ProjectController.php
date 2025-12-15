@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -15,7 +14,7 @@ class ProjectController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('program_name', 'like', '%' . $search . '%');
+                $q->where('program_name', 'like', '%'.$search.'%');
             });
         }
 

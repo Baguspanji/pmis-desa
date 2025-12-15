@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +23,8 @@ class TaskLogbook extends Model
     ];
 
     protected $casts = [
-        'activity_date'  => 'datetime',
-        'verified_at'    => 'datetime',
+        'activity_date' => 'datetime',
+        'verified_at' => 'datetime',
         'progress_value' => 'decimal:2',
     ];
 

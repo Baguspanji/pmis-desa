@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -15,25 +16,25 @@ class DatabaseSeeder extends Seeder
         // Create an admin user
         User::factory()->create([
             'full_name' => 'Admin User',
-            'username'  => 'adminuser',
-            'email'     => 'admin@user.com',
-            'role'      => 'admin',
+            'username' => 'adminuser',
+            'email' => 'admin@user.com',
+            'role' => 'admin',
         ]);
 
         // create operator user
         User::factory()->create([
             'full_name' => 'Operator User',
-            'username'  => 'operatoruser',
-            'email'     => 'operator@user.com',
-            'role'      => 'operator',
+            'username' => 'operatoruser',
+            'email' => 'operator@user.com',
+            'role' => 'operator',
         ]);
 
         // create kepala_desa user
         User::factory()->create([
             'full_name' => 'Kepala Desa User',
-            'username'  => 'kepaladesauser',
-            'email'     => 'kepaladesa@user.com',
-            'role'      => 'kepala_desa',
+            'username' => 'kepaladesauser',
+            'email' => 'kepaladesa@user.com',
+            'role' => 'kepala_desa',
         ]);
 
         // create staff user

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Observers;
 
 use App\Models\HeadResident;
@@ -20,9 +21,9 @@ class ResidentObserver
             } else {
                 // Create new head resident record if it doesn't exist
                 HeadResident::create([
-                    'kk_number'      => $resident->kk_number,
-                    'head_nik'       => $resident->nik,
-                    'head_name'      => $resident->full_name,
+                    'kk_number' => $resident->kk_number,
+                    'head_nik' => $resident->nik,
+                    'head_name' => $resident->full_name,
                     'resident_count' => 1,
                 ]);
             }
@@ -73,7 +74,7 @@ class ResidentObserver
             $headResident = HeadResident::where('kk_number', $resident->kk_number)->first();
             if ($headResident) {
                 $headResident->update([
-                    'head_nik'  => $resident->nik,
+                    'head_nik' => $resident->nik,
                     'head_name' => $resident->full_name,
                 ]);
             }
@@ -91,7 +92,7 @@ class ResidentObserver
 
             if ($headResident && $headResident->resident_count > 1) {
                 $headResident->decrement('resident_count');
-            } else if ($headResident && $headResident->resident_count == 1) {
+            } elseif ($headResident && $headResident->resident_count == 1) {
                 // Delete the head resident if it's the last one
                 $headResident->delete();
             }
@@ -117,7 +118,7 @@ class ResidentObserver
 
             if ($headResident && $headResident->resident_count > 1) {
                 $headResident->decrement('resident_count');
-            } else if ($headResident && $headResident->resident_count == 1) {
+            } elseif ($headResident && $headResident->resident_count == 1) {
                 $headResident->delete();
             }
         }

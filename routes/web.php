@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\TaskReportController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
-use App\Http\Controllers\TaskReportController;
 
 Route::get('/', fn () => view('home'))->name('home');
 Route::get('/profil-desa', fn () => view('profile'))->name('profile');
@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     Volt::route('news-manage', 'news.index')->name('news.manage');
     Volt::route('complaints', 'complaint.index')->name('complaints');
+    Volt::route('suggestions', 'suggestion.index')->name('suggestions');
 
     // PDF Report Routes
     Route::get('tasks/{taskId}/report/pdf', [TaskReportController::class, 'generateTaskReport'])

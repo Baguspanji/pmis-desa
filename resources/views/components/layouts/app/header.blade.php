@@ -62,6 +62,11 @@
                             {{ __('Pengaduan') }}
                         </flux:menu.item>
 
+                        <!-- Suggestions Management -->
+                        <flux:menu.item icon="light-bulb" :href="route('suggestions')" wire:navigate>
+                            {{ __('Saran dan Masukan') }}
+                        </flux:menu.item>
+
                         <!-- Resident Management -->
                         <flux:menu.item icon="user-group" :href="route('residents')" wire:navigate>
                             {{ __('Warga') }}
@@ -184,6 +189,15 @@
                             : '' }}"
                         wire:navigate>
                         {{ __('Pengaduan') }}
+                    </flux:navlist.item>
+                    <!-- Suggestions Management -->
+                    <flux:navlist.item icon="light-bulb" :href="route('suggestions')"
+                        :current="request()->routeIs('suggestions') || request()->routeIs('suggestions.*')"
+                        class="text-white/80! {{ request()->routeIs('suggestions') || request()->routeIs('suggestions.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Saran dan Masukan') }}
                     </flux:navlist.item>
                 @endcanany
                 @canany(['admin', 'operator', 'kepala_desa', 'kasun'])

@@ -16,7 +16,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect('/login');
         }
 
@@ -28,7 +28,7 @@ class RoleMiddleware
             $allowedRoles = array_merge($allowedRoles, explode('|', $role));
         }
 
-        if (!in_array($userRole, $allowedRoles)) {
+        if (! in_array($userRole, $allowedRoles)) {
             abort(403, 'Unauthorized action.');
         }
 
