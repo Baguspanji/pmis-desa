@@ -1,6 +1,30 @@
 <!-- Hero Section with Header -->
-<section class="h-screen flex flex-col text-white bg-linear-to-r from-black/40 to-black/40 rounded-b-3xl"
-    style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page.png') }}); background-size: cover; background-position: center;">
+<section id="hero-section"
+    class="h-screen flex flex-col text-white bg-linear-to-r from-black/40 to-black/40 rounded-b-3xl relative overflow-hidden"
+    style="background-size: cover; background-position: center; transition: background-image 1s ease-in-out;">
+
+    <!-- Background Slider Images -->
+    <div class="absolute inset-0 -z-10">
+        <div id="bg-slider" class="w-full h-full relative">
+            <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-1000"
+                style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page.webp') }}); background-size: cover; background-position: center;">
+            </div>
+            <!-- Add more slides here - you can duplicate this div for more images -->
+            <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000"
+                style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page-1.webp') }}); background-size: cover; background-position: center;">
+            </div>
+            <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000"
+                style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page-2.webp') }}); background-size: cover; background-position: center;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Slider Navigation Dots -->
+    <div class="absolute bottom-6 md:bottom-24 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="0"></button>
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="1"></button>
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="2"></button>
+    </div>
 
     <!-- Header with Transparent Background -->
     <header class="bg-transparent py-4 w-full z-50">
@@ -17,15 +41,15 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center justify-center gap-8">
                 <a href="{{ route('home') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('home') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('home') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Beranda
                 </a>
                 <a href="{{ route('profile') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('profile') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('profile') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Profil Desa
                 </a>
                 <a href="{{ route('news') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('news') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('news') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Berita & Acara
                 </a>
             </nav>
@@ -102,48 +126,98 @@
     </div>
 </section>
 
-<script>
-    // Mobile Menu Toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const line1 = document.getElementById('line1');
-        const line2 = document.getElementById('line2');
-        const line3 = document.getElementById('line3');
-        let isMenuOpen = false;
+@push('script')
+    <script>
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const line1 = document.getElementById('line1');
+            const line2 = document.getElementById('line2');
+            const line3 = document.getElementById('line3');
+            let isMenuOpen = false;
 
-        menuBtn.addEventListener('click', function() {
-            isMenuOpen = !isMenuOpen;
+            menuBtn.addEventListener('click', function() {
+                isMenuOpen = !isMenuOpen;
 
-            if (isMenuOpen) {
-                // Show menu
-                mobileMenu.classList.remove('hidden');
-                menuBtn.classList.add('pl-3');
-                // Animate hamburger to X
-                line1.style.transform = 'rotate(45deg) translateY(11.5px)';
-                line2.style.opacity = '0';
-                line3.style.transform = 'rotate(-45deg) translateY(-11px)';
-            } else {
-                // Hide menu
-                mobileMenu.classList.add('hidden');
-                menuBtn.classList.remove('pl-3');
-                // Reset hamburger
-                line1.style.transform = 'none';
-                line2.style.opacity = '1';
-                line3.style.transform = 'none';
-            }
-        });
-
-        // Close menu when a link is clicked
-        const menuLinks = mobileMenu.querySelectorAll('a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                isMenuOpen = false;
-                mobileMenu.classList.add('hidden');
-                line1.style.transform = 'none';
-                line2.style.opacity = '1';
-                line3.style.transform = 'none';
+                if (isMenuOpen) {
+                    // Show menu
+                    mobileMenu.classList.remove('hidden');
+                    menuBtn.classList.add('pl-3');
+                    // Animate hamburger to X
+                    line1.style.transform = 'rotate(45deg) translateY(11.5px)';
+                    line2.style.opacity = '0';
+                    line3.style.transform = 'rotate(-45deg) translateY(-11px)';
+                } else {
+                    // Hide menu
+                    mobileMenu.classList.add('hidden');
+                    menuBtn.classList.remove('pl-3');
+                    // Reset hamburger
+                    line1.style.transform = 'none';
+                    line2.style.opacity = '1';
+                    line3.style.transform = 'none';
+                }
             });
+
+            // Close menu when a link is clicked
+            const menuLinks = mobileMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    isMenuOpen = false;
+                    mobileMenu.classList.add('hidden');
+                    line1.style.transform = 'none';
+                    line2.style.opacity = '1';
+                    line3.style.transform = 'none';
+                });
+            });
+
+            // Background Image Slider
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            let currentSlide = 0;
+            const slideInterval = 5000; // Change image every 5 seconds
+
+            function showSlide(index) {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.style.opacity = '0';
+                });
+
+                // Remove active state from all dots
+                dots.forEach(dot => {
+                    dot.classList.remove('bg-white');
+                    dot.classList.add('bg-white/50');
+                });
+
+                // Show current slide
+                slides[index].style.opacity = '100';
+
+                // Highlight current dot
+                dots[index].classList.remove('bg-white/50');
+                dots[index].classList.add('bg-white');
+
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            // Auto slide
+            let autoSlide = setInterval(nextSlide, slideInterval);
+
+            // Dot click handlers
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    clearInterval(autoSlide); // Stop auto slide when user clicks
+                    showSlide(index);
+                    autoSlide = setInterval(nextSlide, slideInterval); // Restart auto slide
+                });
+            });
+
+            // Initialize first slide
+            showSlide(0);
         });
-    });
-</script>
+    </script>
+@endpush

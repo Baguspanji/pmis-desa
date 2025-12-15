@@ -1,6 +1,6 @@
 <!-- Hero Section with Header -->
 <section class="h-sm flex flex-col text-white bg-linear-to-r from-black/40 to-black/40 rounded-b-3xl"
-    style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page.png') }}); background-size: cover; background-position: center;">
+    style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ asset('assets/landing-page.webp') }}); background-size: cover; background-position: center;">
 
     <!-- Header with Transparent Background -->
     <header class="bg-transparent py-4 w-full z-50">
@@ -17,15 +17,15 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center justify-center gap-8">
                 <a href="{{ route('home') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('home') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('home') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Beranda
                 </a>
                 <a href="{{ route('profile') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('profile') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('profile') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Profil Desa
                 </a>
                 <a href="{{ route('news') }}"
-                    class="hover:text-[#FDB913] transition hover:font-medium {{ Route::is('news') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
+                    class="px-4 py-1.5 rounded-full bg-white/10 hover:text-[#FDB913] transition hover:font-medium {{ Route::is('news') ? 'text-[#FDB913] font-medium' : 'text-white' }}">
                     Berita & Acara
                 </a>
             </nav>
