@@ -77,7 +77,26 @@ new class extends Component {
             'notes' => ['nullable', 'string'],
         ];
 
-        $validated = $this->validate($rules);
+        $messages = [
+            'target_name.required' => 'Nama target wajib diisi.',
+            'target_value.required' => 'Nilai target wajib diisi.',
+            'target_value.numeric' => 'Nilai target harus berupa angka.',
+            'target_value.min' => 'Nilai target tidak boleh kurang dari 0.',
+            'target_date.required' => 'Tanggal target wajib diisi.',
+            'target_date.date' => 'Tanggal target tidak valid.',
+            'target_unit.required' => 'Satuan target wajib diisi.',
+        ];
+
+        $attributes = [
+            'target_name' => 'Nama Target',
+            'target_value' => 'Nilai Target',
+            'achieved_value' => 'Nilai Tercapai',
+            'target_date' => 'Tanggal Target',
+            'target_unit' => 'Satuan Target',
+            'notes' => 'Catatan',
+        ];
+
+        $validated = $this->validate($rules, $messages, $attributes);
 
         try {
             if ($this->isEdit) {
@@ -168,10 +187,8 @@ new class extends Component {
                     <flux:field>
                         <flux:label>Nama Target <span class="text-red-500">*</span></flux:label>
                         <flux:input wire:model="target_name" type="text" maxlength="50"
-                            placeholder="Contoh: Pelatihan Guru, Pembangunan Jalan, dll." required />
-                        @error('target_name')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                            placeholder="Contoh: Pelatihan Guru, Pembangunan Jalan, dll." />
+                        <flux:error name="target_name"/>
                     </flux:field>
                 </div>
 
@@ -181,10 +198,8 @@ new class extends Component {
                         <flux:field>
                             <flux:label>Nilai Target <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model.live="target_value" type="number" step="0.01" min="0"
-                                placeholder="Masukkan nilai target" required />
-                            @error('target_value')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                                placeholder="Masukkan nilai target" />
+                            <flux:error name="target_value"/>
                             <div class="text-xs text-gray-400 mt-1">
                                 Target: {{ number_format((float) $target_value, 2, ',', '.') }}
                             </div>
@@ -196,10 +211,8 @@ new class extends Component {
                         <flux:field>
                             <flux:label>Satuan <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="target_unit" type="text" maxlength="50"
-                                placeholder="Contoh: orang, unit, m², %, dll." required />
-                            @error('target_unit')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                                placeholder="Contoh: orang, unit, m², %, dll." />
+                            <flux:error name="target_unit"/>
                         </flux:field>
                     </div>
                 </div>
@@ -210,9 +223,7 @@ new class extends Component {
                         <flux:label>Nilai Tercapai</flux:label>
                         {{-- <flux:input wire:model.live="achieved_value" type="number" step="0.01" min="0"
                             placeholder="Masukkan nilai yang sudah tercapai" />
-                        @error('achieved_value')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror --}}
+                        <flux:error name="achieved_value"/> --}}
                         <div class="flex gap-2">
                             <div class="text-xs text-gray-400 mt-1">
                                 Tercapai: {{ number_format((float) ($achieved_value ?: 0), 2, ',', '.') }}
@@ -223,49 +234,45 @@ new class extends Component {
                                     Progress: {{ number_format(($achieved_value / $target_value) * 100, 2) }}%
                                 </div>
                             @endif
-                        </flux:field>
-                        </div>
-                </div>
-
-                <!-- Target Date -->
-                <div>
-                    <flux:field>
-                        <flux:label>Tanggal Target <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model="target_date" type="date" required />
-                        @error('target_date')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                    </flux:field>
-                </div>
-
-                <!-- Notes -->
-                <div>
-                    <flux:field>
-                        <flux:label>Catatan</flux:label>
-                        <flux:textarea wire:model="notes" placeholder="Masukkan catatan tambahan (opsional)"
-                            rows="3" />
-                        @error('notes')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
                     </flux:field>
                 </div>
             </div>
 
-            <div class="flex gap-2">
-                @if ($isEdit)
-                    <flux:button variant="danger" wire:click="deleteTarget" type="button"
-                        wire:confirm="Apakah Anda yakin ingin menghapus target ini?">
-                        Hapus
-                    </flux:button>
-                @endif
-                <flux:spacer />
-                <flux:button variant="ghost" wire:click="closeModal" type="button">
-                    Batal
-                </flux:button>
-                <flux:button type="submit" variant="primary">
-                    {{ $isEdit ? 'Perbarui' : 'Simpan' }}
-                </flux:button>
+            <!-- Target Date -->
+            <div>
+                <flux:field>
+                    <flux:label>Tanggal Target <span class="text-red-500">*</span></flux:label>
+                    <flux:input wire:model="target_date" type="date" />
+                    <flux:error name="target_date"/>
+                </flux:field>
             </div>
-        </form>
-    </flux:modal>
+
+            <!-- Notes -->
+            <div>
+                <flux:field>
+                    <flux:label>Catatan</flux:label>
+                    <flux:textarea wire:model="notes" placeholder="Masukkan catatan tambahan (opsional)"
+                        rows="3" />
+                    <flux:error name="notes"/>
+                </flux:field>
+            </div>
+</div>
+
+<div class="flex gap-2">
+    @if ($isEdit)
+        <flux:button variant="danger" wire:click="deleteTarget" type="button"
+            wire:confirm="Apakah Anda yakin ingin menghapus target ini?">
+            Hapus
+        </flux:button>
+    @endif
+    <flux:spacer />
+    <flux:button variant="ghost" wire:click="closeModal" type="button">
+        Batal
+    </flux:button>
+    <flux:button type="submit" variant="primary">
+        {{ $isEdit ? 'Perbarui' : 'Simpan' }}
+    </flux:button>
+</div>
+</form>
+</flux:modal>
 </div>

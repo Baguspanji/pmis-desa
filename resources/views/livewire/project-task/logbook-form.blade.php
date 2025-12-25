@@ -28,36 +28,6 @@ new class extends Component {
 
     protected $listeners = ['open-logbook-form' => 'openForm'];
 
-    protected function rules()
-    {
-        return [
-            'taskId' => 'required|exists:tasks,id',
-            'taskTargetId' => 'required|exists:task_targets,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'log_date' => 'required|date',
-            'log_type' => 'required|in:progress_update,issue,milestone,meeting,field_visit,other',
-            'progress_value' => 'required|numeric|min:0',
-            'status' => 'required|in:draft,submitted,verified',
-            'location' => 'nullable|string|max:255',
-            'activity_date' => 'required|date',
-            'attachments.*' => 'nullable|file|max:10240', // 10MB max
-        ];
-    }
-
-    protected $messages = [
-        'taskId.required' => 'Task ID harus diisi',
-        'taskTargetId.required' => 'Target ID harus diisi',
-        'title.required' => 'Judul logbook harus diisi',
-        'log_date.required' => 'Tanggal log harus diisi',
-        'log_type.required' => 'Tipe log harus dipilih',
-        'progress_value.required' => 'Nilai progress harus diisi',
-        'progress_value.numeric' => 'Nilai progress harus berupa angka',
-        'status.required' => 'Status harus dipilih',
-        'activity_date.required' => 'Tanggal aktivitas harus diisi',
-        'attachments.*.max' => 'Ukuran file maksimal 10MB',
-    ];
-
     public function openForm($taskId, $taskTargetId, $logbookId = null)
     {
         $this->resetForm();
@@ -97,7 +67,46 @@ new class extends Component {
 
     public function save()
     {
-        $this->validate();
+        $rules = [
+            'taskId' => 'required|exists:tasks,id',
+            'taskTargetId' => 'required|exists:task_targets,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'log_date' => 'required|date',
+            'log_type' => 'required|in:progress_update,issue,milestone,meeting,field_visit,other',
+            'progress_value' => 'required|numeric|min:0',
+            'status' => 'required|in:draft,submitted,verified',
+            'location' => 'nullable|string|max:255',
+            'activity_date' => 'required|date',
+            'attachments.*' => 'nullable|file|max:10240', // 10MB max
+        ];
+
+        $messages = [
+            'taskId.required' => 'Task ID harus diisi',
+            'taskTargetId.required' => 'Target ID harus diisi',
+            'title.required' => 'Judul logbook harus diisi',
+            'log_date.required' => 'Tanggal log harus diisi',
+            'log_type.required' => 'Tipe log harus dipilih',
+            'progress_value.required' => 'Nilai progress harus diisi',
+            'progress_value.numeric' => 'Nilai progress harus berupa angka',
+            'status.required' => 'Status harus dipilih',
+            'activity_date.required' => 'Tanggal aktivitas harus diisi',
+            'attachments.*.max' => 'Ukuran file maksimal 10MB',
+        ];
+
+        $attributes = [
+            'taskId' => 'Task',
+            'taskTargetId' => 'Task Target',
+            'title' => 'Judul Logbook',
+            'log_date' => 'Tanggal Log',
+            'log_type' => 'Tipe Log',
+            'progress_value' => 'Nilai Progress',
+            'status' => 'Status',
+            'activity_date' => 'Tanggal Aktivitas',
+            'attachments' => 'Lampiran',
+        ];
+
+        $this->validate($rules, $messages, $attributes);
 
         try {
             $data = [
@@ -183,10 +192,8 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Judul Logbook <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model="title" type="text" placeholder="Masukkan judul logbook" required />
-                        @error('title')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:input wire:model="title" type="text" placeholder="Masukkan judul logbook" />
+                        <flux:error name="title" />
                     </flux:field>
                 </div>
 
@@ -196,9 +203,7 @@ new class extends Component {
                         <flux:label>Deskripsi</flux:label>
                         <flux:textarea wire:model="description" placeholder="Deskripsi detail aktivitas..."
                             rows="4" />
-                        @error('description')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="description" />
                     </flux:field>
                 </div>
 
@@ -207,7 +212,7 @@ new class extends Component {
                     <div>
                         <flux:field>
                             <flux:label>Tipe Log <span class="text-red-500">*</span></flux:label>
-                            <flux:select wire:model="log_type" placeholder="Pilih tipe log" required>
+                            <flux:select wire:model="log_type" placeholder="Pilih tipe log">
                                 <option value="progress_update">Progress Update</option>
                                 <option value="issue">Issue</option>
                                 <option value="milestone">Milestone</option>
@@ -215,22 +220,18 @@ new class extends Component {
                                 <option value="field_visit">Field Visit</option>
                                 <option value="other">Other</option>
                             </flux:select>
-                            @error('log_type')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="log_type" />
                         </flux:field>
                     </div>
                     <div>
                         <flux:field>
                             <flux:label>Status <span class="text-red-500">*</span></flux:label>
-                            <flux:select wire:model="status" placeholder="Pilih status" required>
+                            <flux:select wire:model="status" placeholder="Pilih status">
                                 <option value="draft">Draft</option>
                                 <option value="submitted">Submitted</option>
                                 <option value="verified">Verified</option>
                             </flux:select>
-                            @error('status')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="status" />
                         </flux:field>
                     </div>
                 </div>
@@ -240,10 +241,8 @@ new class extends Component {
                     <flux:field>
                         <flux:label>Nilai Progress <span class="text-red-500">*</span></flux:label>
                         <flux:input wire:model="progress_value" type="number" step="0.01" min="0"
-                            placeholder="0.00" required />
-                        @error('progress_value')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                            placeholder="0.00" />
+                        <flux:error name="progress_value" />
                     </flux:field>
                 </div>
 
@@ -252,19 +251,15 @@ new class extends Component {
                     <div>
                         <flux:field>
                             <flux:label>Tanggal Log <span class="text-red-500">*</span></flux:label>
-                            <flux:input wire:model="log_date" type="date" required />
-                            @error('log_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:input wire:model="log_date" type="date" />
+                            <flux:error name="log_date" />
                         </flux:field>
                     </div>
                     <div>
                         <flux:field>
                             <flux:label>Tanggal Aktivitas <span class="text-red-500">*</span></flux:label>
-                            <flux:input wire:model="activity_date" type="date" required />
-                            @error('activity_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:input wire:model="activity_date" type="date" />
+                            <flux:error name="activity_date" />
                         </flux:field>
                     </div>
                 </div>
@@ -274,9 +269,7 @@ new class extends Component {
                     <flux:field>
                         <flux:label>Lokasi</flux:label>
                         <flux:input wire:model="location" type="text" placeholder="Lokasi aktivitas" />
-                        @error('location')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="location" />
                     </flux:field>
                 </div>
 
@@ -290,9 +283,7 @@ new class extends Component {
                         <flux:description>
                             Maksimal 10MB per file. Format: gambar, PDF, Word, Excel
                         </flux:description>
-                        @error('attachments.*')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="attachments" />
                     </flux:field>
                 </div>
             </div>

@@ -79,7 +79,28 @@ new class extends Component {
             'transaction_date' => ['required', 'date'],
         ];
 
-        $validated = $this->validate($rules);
+        $messages = [
+            'amount.required' => 'Jumlah anggaran wajib diisi.',
+            'amount.numeric' => 'Jumlah anggaran harus berupa angka.',
+            'amount.min' => 'Jumlah anggaran tidak boleh kurang dari 0.',
+            'description.max' => 'Deskripsi tidak boleh lebih dari 255 karakter.',
+            'category.required' => 'Kategori wajib diisi.',
+            'category.max' => 'Kategori tidak boleh lebih dari 100 karakter.',
+            'transaction_type.required' => 'Tipe transaksi wajib diisi.',
+            'transaction_type.in' => 'Tipe transaksi tidak valid.',
+            'transaction_date.required' => 'Tanggal transaksi wajib diisi.',
+            'transaction_date.date' => 'Tanggal transaksi tidak valid.',
+        ];
+
+        $attributes = [
+            'amount' => 'Jumlah Anggaran',
+            'description' => 'Deskripsi',
+            'category' => 'Kategori',
+            'transaction_type' => 'Tipe Transaksi',
+            'transaction_date' => 'Tanggal Transaksi',
+        ];
+
+        $validated = $this->validate($rules, $messages, $attributes);
 
         try {
             if ($this->isEdit) {
@@ -146,9 +167,7 @@ new class extends Component {
                             <flux:radio value="expense" label="Pengeluaran" />
                             <flux:radio value="income" label="Pemasukan" />
                         </flux:radio.group>
-                        @error('transaction_type')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="transaction_type" />
                     </flux:field>
                 </div> --}}
 
@@ -158,10 +177,8 @@ new class extends Component {
                         <flux:field>
                             <flux:label>Jumlah (Rp) <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model.live="amount" type="number" step="0.01" min="0"
-                                placeholder="Masukkan jumlah" required />
-                            @error('amount')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                                placeholder="Masukkan jumlah" />
+                            <flux:error name="amount" />
                             <div class="text-xs text-gray-400 mt-1">
                                 Jumlah: Rp {{ number_format((float) $amount, 0, ',', '.') }}
                             </div>
@@ -172,10 +189,8 @@ new class extends Component {
                     <div>
                         <flux:field>
                             <flux:label>Tanggal Transaksi <span class="text-red-500">*</span></flux:label>
-                            <flux:input wire:model="transaction_date" type="date" required />
-                            @error('transaction_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:input wire:model="transaction_date" type="date" />
+                            <flux:error name="transaction_date" />
                         </flux:field>
                     </div>
                 </div>
@@ -184,7 +199,7 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Kategori <span class="text-red-500">*</span></flux:label>
-                        <flux:select wire:model="category" placeholder="Pilih kategori" required>
+                        <flux:select wire:model="category" placeholder="Pilih kategori">
                             <flux:select.option value="Bahan Material">Bahan Material</flux:select.option>
                             <flux:select.option value="Alat dan Perlengkapan">Alat dan Perlengkapan</flux:select.option>
                             <flux:select.option value="Tenaga Kerja">Tenaga Kerja</flux:select.option>
@@ -198,9 +213,7 @@ new class extends Component {
                             <flux:select.option value="Sumbangan">Sumbangan</flux:select.option>
                             <flux:select.option value="Lain-lain">Lain-lain</flux:select.option>
                         </flux:select>
-                        @error('category')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="category" />
                     </flux:field>
                 </div>
 
@@ -210,9 +223,7 @@ new class extends Component {
                         <flux:label>Deskripsi</flux:label>
                         <flux:textarea wire:model="description" rows="3" maxlength="255"
                             placeholder="Masukkan deskripsi transaksi (opsional)" />
-                        @error('description')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="description" />
                         <div class="text-xs text-gray-400 mt-1 text-right">
                             {{ strlen($description ?? '') }}/255 karakter
                         </div>

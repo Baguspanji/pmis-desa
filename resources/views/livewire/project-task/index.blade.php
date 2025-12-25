@@ -143,7 +143,7 @@ new class extends Component {
                     class="flex-1 lg:flex-initial">
                     Export PDF
                 </flux:button>
-                @canany(['admin', 'operator'])
+                @canany(['admin', 'operator', 'staff', 'kasun'])
                     <flux:button wire:click="create" variant="primary" class="flex-1 lg:flex-initial">
                         Tambah Tugas
                     </flux:button>
@@ -266,7 +266,7 @@ new class extends Component {
     </div>
 
     <!-- Include Task Form Modal -->
-    @livewire('project-task.form')
+    @livewire('project-task.form', ['programId' => $programId])
 
     <!-- Include Task Detail Modal -->
     @livewire('project-task.detail')

@@ -7,10 +7,11 @@ use App\Models\User;
 use Illuminate\Validation\Rule;
 
 new class extends Component {
+    public $programId = null;
+
     public $taskId = null;
     public $task_name = '';
     public $task_description = '';
-    public $program_id = '';
     public $parent_task_id = '';
     public $assigned_user_id = '';
     public $status = 'not_started';
@@ -32,8 +33,10 @@ new class extends Component {
 
     protected $listeners = ['open-task-form' => 'openModal'];
 
-    public function mount()
+    public function mount($programId = null)
     {
+        $this->programId = $programId;
+
         $this->statuses = [['name' => 'Belum Dimulai', 'value' => 'not_started'], ['name' => 'Sedang Berjalan', 'value' => 'in_progress'], ['name' => 'Selesai', 'value' => 'completed'], ['name' => 'Ditunda', 'value' => 'on_hold'], ['name' => 'Dibatalkan', 'value' => 'cancelled']];
 
         $this->priorities = [['name' => 'Rendah', 'value' => 'low'], ['name' => 'Sedang', 'value' => 'medium'], ['name' => 'Tinggi', 'value' => 'high']];
@@ -44,10 +47,13 @@ new class extends Component {
         $this->programs = Program::all()->toArray();
 
         // Load users for PIC dropdown
-        $this->users = User::where('is_active', true)->where('role', 'staff')->get()->toArray();
+        $this->users = User::where('is_active', true)
+            ->whereIn('role', ['staff', 'kasun'])
+            ->get()
+            ->toArray();
 
         // Load parent tasks (only top-level tasks)
-        $this->parentTasks = Task::whereNull('parent_task_id')->get()->toArray();
+        $this->parentTasks = Task::whereNull('parent_task_id')->where('program_id', $this->programId)->get()->toArray();
     }
 
     public function openModal($taskId = null)
@@ -71,7 +77,6 @@ new class extends Component {
 
         $this->task_name = $task->task_name;
         $this->task_description = $task->task_description ?? '';
-        $this->program_id = $task->program_id ?? '';
         $this->parent_task_id = $task->parent_task_id ?? '';
         $this->assigned_user_id = $task->assigned_user_id ?? '';
         $this->status = $task->status;
@@ -93,7 +98,6 @@ new class extends Component {
         $this->taskId = null;
         $this->task_name = '';
         $this->task_description = '';
-        $this->program_id = '';
         $this->parent_task_id = '';
         $this->assigned_user_id = '';
         $this->status = 'not_started';
@@ -110,18 +114,48 @@ new class extends Component {
         $rules = [
             'task_name' => ['required', 'string', 'max:255'],
             'task_description' => ['nullable', 'string'],
-            'program_id' => ['required', 'exists:programs,id'],
             'parent_task_id' => ['nullable', 'exists:tasks,id'],
             'assigned_user_id' => ['nullable', 'exists:users,id'],
             'status' => ['required', 'in:not_started,in_progress,completed,on_hold,cancelled'],
             'progress_type' => ['nullable', 'in:percentage,status'],
             'priority' => ['nullable', 'in:low,medium,high'],
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'estimated_budget' => ['nullable', 'numeric', 'min:0'],
         ];
 
-        $validated = $this->validate($rules);
+        $messages = [
+            'task_name.required' => 'Nama tugas wajib diisi.',
+            'task_name.max' => 'Nama tugas maksimal :max karakter.',
+            'parent_task_id.exists' => 'Tugas induk tidak valid.',
+            'assigned_user_id.exists' => 'Pengguna yang ditugaskan tidak valid.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status tidak valid.',
+            'progress_type.in' => 'Tipe progress tidak valid.',
+            'priority.in' => 'Prioritas tidak valid.',
+            'start_date.required' => 'Tanggal mulai wajib diisi.',
+            'start_date.date' => 'Tanggal mulai tidak valid.',
+            'end_date.required' => 'Tanggal selesai wajib diisi.',
+            'end_date.date' => 'Tanggal selesai tidak valid.',
+            'end_date.after_or_equal' => 'Tanggal selesai harus sama dengan atau setelah tanggal mulai.',
+            'estimated_budget.numeric' => 'Estimasi anggaran harus berupa angka.',
+            'estimated_budget.min' => 'Estimasi anggaran minimal :min.',
+        ];
+
+        $attributes = [
+            'task_name' => 'Nama Tugas',
+            'task_description' => 'Deskripsi Tugas',
+            'parent_task_id' => 'Tugas Induk',
+            'assigned_user_id' => 'Pengguna yang Ditugaskan',
+            'status' => 'Status',
+            'progress_type' => 'Tipe Progress',
+            'priority' => 'Prioritas',
+            'start_date' => 'Tanggal Mulai',
+            'end_date' => 'Tanggal Selesai',
+            'estimated_budget' => 'Estimasi Anggaran',
+        ];
+
+        $validated = $this->validate($rules, $messages, $attributes);
 
         try {
             if ($this->isEdit) {
@@ -130,7 +164,6 @@ new class extends Component {
                 $updateData = [
                     'task_name' => $validated['task_name'],
                     'task_description' => $validated['task_description'] ?? null,
-                    'program_id' => $validated['program_id'],
                     'parent_task_id' => $validated['parent_task_id'] != '' ? $validated['parent_task_id'] : null,
                     'assigned_user_id' => $validated['assigned_user_id'] != '' ? $validated['assigned_user_id'] : null,
                     'status' => $validated['status'],
@@ -138,7 +171,7 @@ new class extends Component {
                     'priority' => $validated['priority'] ?? 'medium',
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
-                    'estimated_budget' => $validated['estimated_budget'] ?? null,
+                    'estimated_budget' => floatval($validated['estimated_budget'] ?? 0),
                 ];
 
                 $task->update($updateData);
@@ -149,10 +182,14 @@ new class extends Component {
                     'content' => 'Tugas berhasil diperbarui.',
                 ]);
             } else {
+                if (in_array(Auth::user()->role, ['staff', 'kasun']) && ($validated['assigned_user_id'] == '' || $validated['assigned_user_id'] == null)) {
+                    $validated['assigned_user_id'] = Auth::user()->id;
+                }
+
                 Task::create([
                     'task_name' => $validated['task_name'],
                     'task_description' => $validated['task_description'] ?? null,
-                    'program_id' => $validated['program_id'],
+                    'program_id' => $this->programId,
                     'parent_task_id' => $validated['parent_task_id'] != '' ? $validated['parent_task_id'] : null,
                     'assigned_user_id' => $validated['assigned_user_id'] != '' ? $validated['assigned_user_id'] : null,
                     'status' => $validated['status'],
@@ -160,7 +197,7 @@ new class extends Component {
                     'priority' => $validated['priority'] ?? 'medium',
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
-                    'estimated_budget' => $validated['estimated_budget'] ?? null,
+                    'estimated_budget' => floatval($validated['estimated_budget'] ?? 0),
                 ]);
 
                 $this->dispatch('show-alert', [
@@ -196,10 +233,8 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Nama Tugas <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model="task_name" type="text" placeholder="Masukkan nama tugas" required />
-                        @error('task_name')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:input wire:model="task_name" type="text" placeholder="Masukkan nama tugas" />
+                        <flux:error name="task_name" />
                     </flux:field>
                 </div>
 
@@ -209,25 +244,7 @@ new class extends Component {
                         <flux:label>Deskripsi Tugas</flux:label>
                         <flux:textarea wire:model="task_description" placeholder="Masukkan deskripsi tugas"
                             rows="3" />
-                        @error('task_description')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                    </flux:field>
-                </div>
-
-                <!-- Program -->
-                <div>
-                    <flux:field>
-                        <flux:label>Program <span class="text-red-500">*</span></flux:label>
-                        <flux:select wire:model="program_id" placeholder="Pilih program" required>
-                            <option value="">-- Pilih Program --</option>
-                            @foreach ($programs as $program)
-                                <option value="{{ $program['id'] }}">{{ $program['program_name'] }}</option>
-                            @endforeach
-                        </flux:select>
-                        @error('program_id')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="task_description" />
                     </flux:field>
                 </div>
 
@@ -243,27 +260,25 @@ new class extends Component {
                                 @endif
                             @endforeach
                         </flux:select>
-                        @error('parent_task_id')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="parent_task_id" />
                     </flux:field>
                 </div>
 
                 <!-- Assigned User -->
-                <div>
-                    <flux:field>
-                        <flux:label>Ditugaskan Kepada</flux:label>
-                        <flux:select wire:model="assigned_user_id" placeholder="Pilih pengguna">
-                            <option value="">-- Pilih Pengguna --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user['id'] }}">{{ $user['full_name'] }}</option>
-                            @endforeach
-                        </flux:select>
-                        @error('assigned_user_id')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                    </flux:field>
-                </div>
+                @if (!in_array(Auth::user()->role, ['staff', 'kasun']))
+                    <div>
+                        <flux:field>
+                            <flux:label>Ditugaskan Kepada</flux:label>
+                            <flux:select wire:model="assigned_user_id" placeholder="Pilih pengguna">
+                                <option value="">-- Pilih Pengguna --</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user['id'] }}">{{ $user['full_name'] }}</option>
+                                @endforeach
+                            </flux:select>
+                            <flux:error name="assigned_user_id" />
+                        </flux:field>
+                    </div>
+                @endif
 
                 <!-- Priority and Progress Type -->
                 <div class="grid grid-cols-2 gap-4">
@@ -275,9 +290,7 @@ new class extends Component {
                                     <option value="{{ $priority['value'] }}">{{ $priority['name'] }}</option>
                                 @endforeach
                             </flux:select>
-                            @error('priority')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="priority" />
                         </flux:field>
                     </div>
                     <div>
@@ -288,9 +301,7 @@ new class extends Component {
                                     <option value="{{ $progressType['value'] }}">{{ $progressType['name'] }}</option>
                                 @endforeach
                             </flux:select>
-                            @error('progress_type')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="progress_type" />
                         </flux:field>
                     </div>
                 </div>
@@ -299,20 +310,16 @@ new class extends Component {
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <flux:field>
-                            <flux:label>Tanggal Mulai</flux:label>
+                            <flux:label>Tanggal Mulai <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="start_date" type="date" />
-                            @error('start_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="start_date" />
                         </flux:field>
                     </div>
                     <div>
                         <flux:field>
-                            <flux:label>Tanggal Selesai</flux:label>
+                            <flux:label>Tanggal Selesai <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="end_date" type="date" />
-                            @error('end_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="end_date" />
                         </flux:field>
                     </div>
                 </div>
@@ -323,9 +330,7 @@ new class extends Component {
                         <flux:label>Estimasi Anggaran</flux:label>
                         <flux:input wire:model.live="estimated_budget" type="number" step="0.01" min="0"
                             placeholder="Masukkan estimasi anggaran" />
-                        @error('estimated_budget')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="estimated_budget" />
                         <div class="text-xs text-gray-400">
                             Rp {{ number_format((float) $estimated_budget, 2, ',', '.') }}
                         </div>
@@ -336,14 +341,12 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Status <span class="text-red-500">*</span></flux:label>
-                        <flux:select wire:model="status" placeholder="Pilih status" required>
+                        <flux:select wire:model="status" placeholder="Pilih status">
                             @foreach ($statuses as $status)
                                 <option value="{{ $status['value'] }}">{{ $status['name'] }}</option>
                             @endforeach
                         </flux:select>
-                        @error('status')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="status" />
                     </flux:field>
                 </div>
             </div>
