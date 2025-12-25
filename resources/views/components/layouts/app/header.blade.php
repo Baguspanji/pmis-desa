@@ -57,6 +57,11 @@
                             {{ __('Berita Acara') }}
                         </flux:menu.item>
 
+                        <!-- Organization Structure -->
+                        <flux:menu.item icon="building-library" :href="route('organization.structure')" wire:navigate>
+                            {{ __('Struktur Organisasi') }}
+                        </flux:menu.item>
+
                         <!-- Pengaduan Management -->
                         <flux:menu.item icon="chat-bubble-oval-left-ellipsis" :href="route('complaints')" wire:navigate>
                             {{ __('Pengaduan') }}
@@ -180,6 +185,15 @@
                             : '' }}"
                         wire:navigate>
                         {{ __('Berita Acara') }}
+                    </flux:navlist.item>
+                    <!-- Organization Structure -->
+                    <flux:navlist.item icon="building-library" :href="route('organization.structure')"
+                        :current="request()->routeIs('organization.structure') || request()->routeIs('organization.structure.*')"
+                        class="text-white/80! {{ request()->routeIs('organization.structure') || request()->routeIs('organization.structure.*')
+                            ? 'bg-primary-300/40! border-transparent! data-current:after:bg-transparent'
+                            : '' }}"
+                        wire:navigate>
+                        {{ __('Struktur Organisasi') }}
                     </flux:navlist.item>
                     <!-- Pengaduan Management -->
                     <flux:navlist.item icon="chat-bubble-oval-left-ellipsis" :href="route('complaints')"

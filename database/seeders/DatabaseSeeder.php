@@ -42,5 +42,6 @@ class DatabaseSeeder extends Seeder
 
         // create programs, projects, tasks, etc. using their respective seeders
         $this->call(ProgramSeeder::class);
+        $this->call(OrganizationStructureSeeder::class);
     }
 }
