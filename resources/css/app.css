@@ -73,6 +73,10 @@ body {
     @apply  mb-0! leading-tight!;
 }
 
+[data-flux-error] {
+    @apply text-sm text-red-600 mt-0!;
+}
+
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {

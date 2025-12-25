@@ -26,13 +26,7 @@ new class extends Component {
 
     public function mount()
     {
-        $this->statuses = [
-            ['name' => 'Direncanakan', 'value' => 'planned'],
-            ['name' => 'Sedang Berjalan', 'value' => 'in_progress'],
-            ['name' => 'Selesai', 'value' => 'completed'],
-            ['name' => 'Ditunda', 'value' => 'on_hold'],
-            ['name' => 'Dibatalkan', 'value' => 'cancelled'],
-        ];
+        $this->statuses = [['name' => 'Direncanakan', 'value' => 'planned'], ['name' => 'Sedang Berjalan', 'value' => 'in_progress'], ['name' => 'Selesai', 'value' => 'completed'], ['name' => 'Ditunda', 'value' => 'on_hold'], ['name' => 'Dibatalkan', 'value' => 'cancelled']];
 
         // Load users for PIC dropdown
         $this->users = User::where('is_active', true)->where('role', 'staff')->get()->toArray();
@@ -93,14 +87,37 @@ new class extends Component {
             'program_name' => ['required', 'string', 'max:255'],
             'program_description' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'pic_user_id' => ['nullable', 'exists:users,id'],
             'total_budget' => ['nullable', 'numeric', 'min:0'],
             'status' => ['required', 'in:planned,in_progress,completed,on_hold,cancelled'],
         ];
 
-        $validated = $this->validate($rules);
+        $messages = [
+            'program_name.required' => 'Nama program wajib diisi.',
+            'start_date.required' => 'Tanggal mulai wajib diisi.',
+            'end_date.required' => 'Tanggal selesai wajib diisi.',
+            'end_date.after_or_equal' => 'Tanggal selesai harus sama dengan atau setelah tanggal mulai.',
+            'pic_user_id.exists' => 'Penanggung jawab yang dipilih tidak valid.',
+            'total_budget.numeric' => 'Total anggaran harus berupa angka.',
+            'total_budget.min' => 'Total anggaran tidak boleh negatif.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
+        $attributes = [
+            'program_name' => 'Nama Program',
+            'program_description' => 'Deskripsi Program',
+            'location' => 'Lokasi',
+            'start_date' => 'Tanggal Mulai',
+            'end_date' => 'Tanggal Selesai',
+            'pic_user_id' => 'Penanggung Jawab',
+            'total_budget' => 'Total Anggaran',
+            'status' => 'Status',
+        ];
+
+        $validated = $this->validate($rules, $messages, $attributes);
 
         try {
             if ($this->isEdit) {
@@ -113,7 +130,7 @@ new class extends Component {
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
                     'pic_user_id' => $validated['pic_user_id'] != '' ? $validated['pic_user_id'] : null,
-                    'total_budget' => $validated['total_budget'] ?? null,
+                    'total_budget' => floatval($validated['total_budget'] ?? 0),
                     'status' => $validated['status'],
                 ];
 
@@ -125,6 +142,10 @@ new class extends Component {
                     'content' => 'Program berhasil diperbarui.',
                 ]);
             } else {
+                if (Auth::user()->role === 'staff' && ($validated['pic_user_id'] == '' || $validated['pic_user_id'] == null)) {
+                    $validated['pic_user_id'] = Auth::id();
+                }
+
                 Program::create([
                     'program_name' => $validated['program_name'],
                     'program_description' => $validated['program_description'] ?? null,
@@ -132,7 +153,7 @@ new class extends Component {
                     'start_date' => $validated['start_date'] ?? null,
                     'end_date' => $validated['end_date'] ?? null,
                     'pic_user_id' => $validated['pic_user_id'] != '' ? $validated['pic_user_id'] : null,
-                    'total_budget' => $validated['total_budget'] ?? null,
+                    'total_budget' => floatval($validated['total_budget'] ?? 0),
                     'status' => $validated['status'],
                     'created_by' => auth()->id(),
                 ]);
@@ -170,10 +191,8 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Nama Program <span class="text-red-500">*</span></flux:label>
-                        <flux:input wire:model="program_name" type="text" placeholder="Masukkan nama program" required />
-                        @error('program_name')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:input wire:model="program_name" type="text" placeholder="Masukkan nama program" />
+                        <flux:error name="program_name" />
                     </flux:field>
                 </div>
 
@@ -181,10 +200,9 @@ new class extends Component {
                 <div>
                     <flux:field>
                         <flux:label>Deskripsi Program</flux:label>
-                        <flux:textarea wire:model="program_description" placeholder="Masukkan deskripsi program" rows="3" />
-                        @error('program_description')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:textarea wire:model="program_description" placeholder="Masukkan deskripsi program"
+                            rows="3" />
+                        <flux:error name="program_description" />
                     </flux:field>
                 </div>
 
@@ -193,9 +211,7 @@ new class extends Component {
                     <flux:field>
                         <flux:label>Lokasi</flux:label>
                         <flux:input wire:model="location" type="text" placeholder="Masukkan lokasi program" />
-                        @error('location')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="location" />
                     </flux:field>
                 </div>
 
@@ -203,50 +219,45 @@ new class extends Component {
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <flux:field>
-                            <flux:label>Tanggal Mulai</flux:label>
+                            <flux:label>Tanggal Mulai <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="start_date" type="date" />
-                            @error('start_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="start_date" />
                         </flux:field>
                     </div>
                     <div>
                         <flux:field>
-                            <flux:label>Tanggal Selesai</flux:label>
+                            <flux:label>Tanggal Selesai <span class="text-red-500">*</span></flux:label>
                             <flux:input wire:model="end_date" type="date" />
-                            @error('end_date')
-                                <flux:error>{{ $message }}</flux:error>
-                            @enderror
+                            <flux:error name="end_date" />
                         </flux:field>
                     </div>
                 </div>
 
                 <!-- PIC -->
-                <div>
-                    <flux:field>
-                        <flux:label>Pelaksanan Kegiatan (PK)</flux:label>
-                        <flux:select wire:model="pic_user_id" placeholder="Pilih penanggung jawab">
-                            <option value="">-- Pilih PK --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user['id'] }}">{{ $user['full_name'] }}</option>
-                            @endforeach
-                        </flux:select>
-                        @error('pic_user_id')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
-                    </flux:field>
-                </div>
+                @if (Auth::user()->role !== 'staff')
+                    <div>
+                        <flux:field>
+                            <flux:label>Pelaksanan Kegiatan (PK)</flux:label>
+                            <flux:select wire:model="pic_user_id" placeholder="Pilih penanggung jawab">
+                                <option value="">-- Pilih PK --</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user['id'] }}">{{ $user['full_name'] }}</option>
+                                @endforeach
+                            </flux:select>
+                            <flux:error name="pic_user_id" />
+                        </flux:field>
+                    </div>
+                @endif
 
                 <!-- Total Budget -->
                 <div>
                     <flux:field>
                         <flux:label>Total Anggaran</flux:label>
-                        <flux:input wire:model.live="total_budget" type="number" step="0.01" min="0" placeholder="Masukkan total anggaran" />
-                        @error('total_budget')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:input wire:model.live="total_budget" type="number" step="0.01" min="0"
+                            placeholder="Masukkan total anggaran" />
+                        <flux:error name="total_budget" />
                         <div class="text-xs text-gray-400">
-                            Rp {{ number_format((float)$total_budget, 2, ',', '.') }}
+                            Rp {{ number_format((float) $total_budget, 2, ',', '.') }}
                         </div>
                     </flux:field>
                 </div>
@@ -260,9 +271,7 @@ new class extends Component {
                                 <option value="{{ $status['value'] }}">{{ $status['name'] }}</option>
                             @endforeach
                         </flux:select>
-                        @error('status')
-                            <flux:error>{{ $message }}</flux:error>
-                        @enderror
+                        <flux:error name="status" />
                     </flux:field>
                 </div>
             </div>

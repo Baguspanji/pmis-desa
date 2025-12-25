@@ -149,7 +149,7 @@ new #[Title('Program')] class extends Component {
 <div>
     <!-- Header Page -->
     <x-app-header-page title="Program" description="Kelola program/proyek desa di sini." :breadcrumbs="[['label' => 'Dashboard', 'url' => route('dashboard')], ['label' => 'Program']]">
-        @canany(['admin', 'operator'])
+        @canany(['admin', 'operator', 'staff'])
             <x-slot:actions>
                 <flux:button wire:click="create" variant="primary" class="w-full lg:w-auto">
                     Tambah Program
@@ -204,6 +204,13 @@ new #[Title('Program')] class extends Component {
                                     Lihat Tugas</flux:menu.item>
                                 <flux:menu.item icon="eye" wire:click="viewDetail({{ $project->id }})">Lihat Detail
                                 </flux:menu.item>
+                                @if (Auth::user()->role === 'staff' && Auth::id() === $project->pic_user_id)
+                                    <flux:menu.item icon="square-pen" wire:click="edit({{ $project->id }})">Edit
+                                    </flux:menu.item>
+                                    <flux:menu.separator />
+                                    <flux:menu.item icon="trash" variant="danger"
+                                        wire:click="delete({{ $project->id }})">Hapus</flux:menu.item>
+                                @endif
                                 @canany(['admin', 'operator'])
                                     <flux:menu.item icon="square-pen" wire:click="edit({{ $project->id }})">Edit
                                     </flux:menu.item>
